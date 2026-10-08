@@ -1,0 +1,39 @@
+name: Nightly EU funding collection
+
+on:
+  schedule:
+    - cron: '0 21 * * *'
+      timezone: Europe/Rome
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: eu-funding-collection
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run tests
+        run: python -m unittest discover -s tests -v
+      - name: Download opportunities
+        run: python -m bandi_eu sync
+      - name: Commit the dataset
+        run: |
+          if git diff --quiet -- data/opportunities.jsonl && [ -z "$(git ls-files --others --exclude-standard data/opportunities.jsonl)" ]; then
+            echo "No data changes"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/opportunities.jsonl
+          git commit -m "Update EU funding opportunities"
+          git push
