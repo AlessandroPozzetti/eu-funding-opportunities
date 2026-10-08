@@ -9,6 +9,7 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 from .core import assess, live, load
+from .site import public_snapshot
 
 
 WEB_DIR = Path(__file__).resolve().parent.parent / "web"
@@ -17,6 +18,7 @@ STATIC_FILES = {
     "/styles.css": ("styles.css", "text/css; charset=utf-8"),
     "/matcher.js": ("matcher.js", "text/javascript; charset=utf-8"),
     "/app.js": ("app.js", "text/javascript; charset=utf-8"),
+    "/favicon.svg": ("favicon.svg", "image/svg+xml"),
 }
 
 
@@ -48,6 +50,9 @@ def create_handler(data_path: Path):
             path = urlsplit(self.path).path
             if path == "/api/status":
                 self.send_json(summary(load(data_path)))
+                return
+            if path == "/api/opportunities":
+                self.send_json(public_snapshot(load(data_path)))
                 return
             if path not in STATIC_FILES:
                 self.send_error(404, "Not found")

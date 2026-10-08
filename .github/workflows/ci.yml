@@ -1,0 +1,38 @@
+name: Verify
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+    paths:
+      - 'bandi_eu/**'
+      - 'web/**'
+      - 'tests/**'
+      - 'evaluation/**'
+      - 'scripts/**'
+      - '.github/workflows/**'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Python tests and engine parity
+        run: python -m unittest discover -s tests -v
+      - name: Browser engine checks
+        run: node tests/test_matcher.js
+      - name: Retrieval regression gates
+        run: python scripts/evaluate_matcher.py --check
+      - name: Static distribution
+        run: python -m bandi_eu build-site --output public_site

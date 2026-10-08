@@ -29,6 +29,7 @@ class StaticSiteTests(unittest.TestCase):
             self.assertNotIn("raw_metadata", snapshot["records"][0])
             self.assertIn('data-mode="static"', (root / "public" / "index.html").read_text())
             self.assertTrue((root / "public" / "matcher.js").exists())
+            self.assertTrue((root / "public" / "favicon.svg").exists())
 
 
 if __name__ == "__main__":

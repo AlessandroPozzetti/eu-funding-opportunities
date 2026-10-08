@@ -18,9 +18,20 @@ PUBLIC_FIELDS = (
 )
 
 
-def build_site(data_path: Path, output_dir: Path) -> dict[str, object]:
-    records = load(data_path)
+def public_snapshot(records: dict[str, dict]) -> dict:
+    """Return the shared public data contract for static and local clients."""
     active = [row for row in records.values() if live(row)]
+    return {
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "last_collected": max((row.get("last_seen", "") for row in records.values()), default=""),
+        "stored": len(records),
+        "matching_config": CONFIG,
+        "records": [{key: row.get(key) for key in PUBLIC_FIELDS} for row in active],
+    }
+
+
+def build_site(data_path: Path, output_dir: Path) -> dict[str, object]:
+    snapshot = public_snapshot(load(data_path))
     output_dir.mkdir(parents=True, exist_ok=True)
 
     html = (WEB_DIR / "index.html").read_text(encoding="utf-8")
@@ -30,17 +41,9 @@ def build_site(data_path: Path, output_dir: Path) -> dict[str, object]:
     (output_dir / "index.html").write_text(
         html.replace(marker, 'data-mode="static"'), encoding="utf-8"
     )
-    for name in ("styles.css", "matcher.js", "app.js"):
+    for name in ("styles.css", "matcher.js", "app.js", "favicon.svg"):
         copyfile(WEB_DIR / name, output_dir / name)
-
-    snapshot = {
-        "generated_at": datetime.now(timezone.utc).isoformat(),
-        "last_collected": max((row.get("last_seen", "") for row in records.values()), default=""),
-        "stored": len(records),
-        "matching_config": CONFIG,
-        "records": [{key: row.get(key) for key in PUBLIC_FIELDS} for row in active],
-    }
     (output_dir / "opportunities.json").write_text(
         json.dumps(snapshot, ensure_ascii=False, separators=(",", ":")), encoding="utf-8"
     )
-    return {"active_exported": len(active), "stored": len(records), "output_dir": str(output_dir)}
+    return {"active_exported": len(snapshot["records"]), "stored": snapshot["stored"], "output_dir": str(output_dir)}

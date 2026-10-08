@@ -35,6 +35,11 @@ class PortalTests(unittest.TestCase):
                     status = json.load(response)
                 self.assertEqual(status["active_grants"], 1)
                 self.assertEqual(status["active_tenders"], 1)
+                with urlopen(base + "/api/opportunities") as response:
+                    snapshot = json.load(response)
+                self.assertEqual(len(snapshot["records"]), 2)
+                self.assertEqual(snapshot["matching_config"]["version"], "2.0")
+                self.assertNotIn("raw_metadata", snapshot["records"][0])
                 request = Request(
                     base + "/api/match",
                     data=json.dumps({"description": "battery recycling", "keywords": ["energy"], "kind": "grant"}).encode(),
@@ -49,6 +54,8 @@ class PortalTests(unittest.TestCase):
                     self.assertIn(b"EU Opportunity Finder", response.read())
                 with urlopen(base + "/matcher.js") as response:
                     self.assertIn(b"rankOpportunities", response.read())
+                with urlopen(base + "/favicon.svg") as response:
+                    self.assertIn(b"<svg", response.read())
             finally:
                 server.shutdown()
                 server.server_close()

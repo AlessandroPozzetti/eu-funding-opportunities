@@ -9,24 +9,26 @@ node tests/test_matcher.js
 python3 scripts/evaluate_matcher.py --check
 
 git add -A -- \
-  .github/workflows/nightly-sync.yml \
+  .github \
   .gitignore \
   README.md \
+  CONTRIBUTING.md \
+  docs \
+  data/README.md \
   bandi_eu \
   evaluation \
   tests \
   web \
-  scripts/evaluate_matcher.py \
-  scripts/publish_portal.sh
+  scripts
 
 if ! git diff --cached --quiet; then
-  git commit -m "Improve opportunity matching and add quality checks"
+  git commit -m "Update opportunity portal"
 fi
 
 git pull --rebase origin main
 git push origin main
 
-repository="AlessandroPozzetti/eu-funding-opportunities"
+repository="$(gh repo view --json nameWithOwner --jq .nameWithOwner)"
 if gh api "repos/$repository/pages" >/dev/null 2>&1; then
   gh api --method PUT "repos/$repository/pages" -f build_type=workflow >/dev/null
 else
@@ -35,4 +37,4 @@ fi
 
 gh workflow run nightly-sync.yml --ref main
 printf '\nThe public portal deployment was requested.\n'
-printf 'Expected URL: https://alessandropozzetti.github.io/eu-funding-opportunities/\n'
+gh api "repos/$repository/pages" --jq '.html_url'

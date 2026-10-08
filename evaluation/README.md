@@ -1,6 +1,6 @@
 # Matching evaluation
 
-This is a reproducible **pilot and regression suite**, not an independent estimate of retrieval accuracy or a calibration of funding probabilities. All judgments were made by the coding assistant from the collected source texts. The same scenarios informed development. No held-out expert evaluation has been completed.
+Fixed-corpus regression evaluation for the Python and browser retrieval engines. Relevance judgments are development fixtures derived from source descriptions. The scenarios were used during implementation; they have not undergone independent expert annotation or held-out evaluation. Scores are not probability-calibrated.
 
 ## Evidence and reproducibility
 
@@ -32,7 +32,7 @@ The workflow fails if a known target leaves the top five, a selected misleading 
 
 The target for the English cultural-heritage/XR project moves from rank 16 to rank 1. The two software-maintenance targets move from ranks 2 and 14 to ranks 1 and 2. The battery-recycling query no longer returns a fusion-power call or a recycled-paper supply contract through generic shared terminology.
 
-These figures **are not 100% accuracy**. Most corpus records are unjudged for each query. We therefore report recovery of specified targets and pairwise comparisons, rather than precision over all results or recall over every truly relevant call. Partial matches can still be wrong. Both Italian checks find a specified target in the top five; two checks cannot establish general multilingual performance.
+Judgments are incomplete: most query/document pairs are unlabelled. The reported measures describe recovery of specified targets and selected pairwise orderings; they do not estimate corpus-wide precision or recall. Italian alias checks are reported separately and provide no evidence of general multilingual performance.
 
 ## How the index is calculated
 

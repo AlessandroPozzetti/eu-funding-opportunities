@@ -3,75 +3,113 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Explore open EU funding and procurement opportunities relevant to your project.">
-  <title>EU Opportunity Finder</title>
-  <link rel="stylesheet" href="styles.css?v=2">
-  <script src="matcher.js?v=2" defer></script>
-  <script src="app.js?v=2" defer></script>
+  <meta name="theme-color" content="#003399">
+  <meta name="description" content="Find European grants and public contracts that connect with your work. Explore open calls, compare project relevance and follow the evidence.">
+  <title>EU Opportunity Finder — Find your next opening</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css?v=4">
+  <script src="matcher.js?v=4" defer></script>
+  <script src="app.js?v=4" defer></script>
 </head>
 <body>
+  <a class="skip-link" href="#explore">Skip to opportunities</a>
+  <svg class="icon-library" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+    <symbol id="icon-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+    <symbol id="icon-external" viewBox="0 0 24 24"><path d="M7 17 17 7M7 7h10v10"/></symbol>
+    <symbol id="icon-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></symbol>
+    <symbol id="icon-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="icon-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="icon-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="icon-code" viewBox="0 0 24 24"><path d="m8 7-5 5 5 5m8-10 5 5-5 5m-3-12-2 20"/></symbol>
+    <symbol id="icon-shield" viewBox="0 0 24 24"><path d="m12 3 8 3v5c0 5-5 9-8 10-3-1-8-5-8-10V6z"/><path d="m8 12 3 3 5-6"/></symbol>
+  </svg>
+
   <div class="page-shell">
     <header class="site-header">
       <a class="brand" href="./" aria-label="EU Opportunity Finder home">
-        <span class="brand-mark" aria-hidden="true">✳</span>
-        <span>EU Opportunity Finder</span>
+        <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="8"/><path d="M10 12h11M10 20h8M10 28h20M23 19l7-7m-7 0h7v7" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>EU Opportunity<span class="brand-second">Finder</span></span>
       </a>
-      <span class="header-note">Funding &amp; procurement intelligence</span>
+      <nav class="header-nav" aria-label="Main navigation">
+        <a href="#explore">Explore</a>
+        <a href="#method">Our approach</a>
+        <a class="repository-link" href="https://github.com/AlessandroPozzetti/eu-funding-opportunities" target="_blank" rel="noopener noreferrer">GitHub <svg class="icon" aria-hidden="true"><use href="#icon-external"/></svg></a>
+      </nav>
     </header>
 
     <main>
       <section class="hero" aria-labelledby="page-title">
         <div class="hero-copy">
-      <p class="eyebrow">EU FUNDING &amp; TENDERS PORTAL</p>
-          <h1 id="page-title">Find opportunities that fit your idea.</h1>
-          <p class="hero-intro">Describe what you want to build. We will compare your project with currently open EU grants and procurement notices, then show why each result matched.</p>
+          <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> EUROPEAN FUNDING &amp; PUBLIC CONTRACTS</p>
+          <h1 id="page-title">Big ideas.<br><span class="hero-accent">The right opening.</span></h1>
+          <p class="hero-intro">Find the European opportunities that connect with your work. A clearer view of grants, tenders and what makes them relevant.</p>
+          <a class="hero-cta" href="#explore">Find your opportunity <svg class="icon" aria-hidden="true"><use href="#icon-arrow"/></svg></a>
+          <div class="hero-footnote">One place to explore. A direct path to the source.</div>
         </div>
-        <div class="hero-stats" aria-label="Dataset status">
-          <div class="stat"><strong id="active-count">—</strong><span>open opportunities</span></div>
-          <div class="stat-breakdown"><span id="grant-count">— grants</span><span id="tender-count">— tenders</span></div>
-          <p id="last-collected">Checking the dataset…</p>
+        <div class="opportunity-map" aria-hidden="true">
+          <div class="map-caption"><span>AN OPEN LANDSCAPE</span><span>EU / OPEN</span></div>
+          <svg class="orbit-map" viewBox="0 0 440 330" fill="none">
+            <path class="map-grid" d="M0 55h440M0 110h440M0 165h440M0 220h440M0 275h440M55 0v330M110 0v330M165 0v330M220 0v330M275 0v330M330 0v330M385 0v330"/>
+            <ellipse class="map-orbit" cx="220" cy="166" rx="160" ry="123" transform="rotate(-22 220 166)"/>
+            <ellipse class="map-orbit inner" cx="220" cy="166" rx="105" ry="80" transform="rotate(-22 220 166)"/>
+            <path class="map-path" d="M60 182 135 88 220 166 340 97M135 88 286 252 370 196M220 166 135 259"/>
+            <circle class="map-node" cx="60" cy="182" r="5"/><circle class="map-node" cx="135" cy="88" r="5"/><circle class="map-node" cx="340" cy="97" r="5"/><circle class="map-node" cx="286" cy="252" r="5"/><circle class="map-node" cx="370" cy="196" r="5"/><circle class="map-node" cx="135" cy="259" r="5"/>
+            <circle class="map-center-halo" cx="220" cy="166" r="44"/><circle class="map-center" cx="220" cy="166" r="32"/>
+            <path stroke="#003399" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="m209 177 22-22m-22 0h22v22"/>
+          </svg>
+          <span class="map-label label-research">Research &amp; innovation</span>
+          <span class="map-label label-services">Public services</span>
+          <span class="map-label label-growth">Ideas into action <span>↗</span></span>
+          <div class="map-bottom"><span class="map-scale"></span> CONNECTING AMBITION WITH OPPORTUNITY</div>
         </div>
       </section>
 
+      <section class="catalogue-bar" aria-label="Current catalogue">
+        <div class="catalogue-label"><span class="eyebrow">THE OPEN CALL INDEX</span><span id="last-collected">Loading the latest collection…</span></div>
+        <button class="stat" type="button" data-browse-kind=""><strong id="active-count">—</strong><span>open opportunities <span aria-hidden="true">↗</span></span></button>
+        <button class="stat" type="button" data-browse-kind="grant"><strong id="grant-count">—</strong><span>research &amp; funding</span></button>
+        <button class="stat" type="button" data-browse-kind="tender"><strong id="tender-count">—</strong><span>public contracts</span></button>
+      </section>
+
       <div id="dataset-warning" class="notice" role="status" hidden></div>
+      <noscript><p class="notice">Enable JavaScript to explore the catalogue and compare your project with open opportunities.</p></noscript>
 
-      <div class="workspace">
-        <section class="search-panel" aria-labelledby="search-title">
-          <div class="section-heading"><span class="step">01</span><div><h2 id="search-title">Your project</h2><p>Write a concise description and add the main topics.</p></div></div>
-          <form id="match-form">
-            <label for="description">What do you want to do?</label>
-            <textarea id="description" name="description" rows="7" maxlength="4000" placeholder="Example: We develop recyclable batteries and energy storage systems for local power grids." required></textarea>
-            <p class="field-help">Use English and describe the activity, subject and intended users. English is the main language used to test this matcher.</p>
+      <section id="explore" class="explore-section" aria-labelledby="explore-title">
+        <div class="section-intro"><div><p class="eyebrow">01 / DISCOVER</p><h2 id="explore-title">Start with what matters.</h2></div><p>A new project, a specialised service, an idea worth pursuing.<br>Tell us where you want to go.</p></div>
+        <div class="workspace">
+          <aside class="search-panel" aria-labelledby="search-title">
+            <div class="panel-heading"><span class="panel-kicker">YOUR PROJECT</span><svg class="icon" aria-hidden="true"><use href="#icon-search"/></svg></div>
+            <h3 id="search-title">What are you<br>working on?</h3>
+            <form id="match-form">
+              <label for="description">Project or service description</label>
+              <textarea id="description" name="description" rows="6" maxlength="4000" placeholder="We develop cybersecurity products that help small businesses detect and respond to attacks…" aria-describedby="description-help" required></textarea>
+              <p id="description-help" class="field-help">Write in English. Include your activity, subject and intended users.</p>
+              <label for="keywords">Priority topics <span class="optional">optional</span></label>
+              <input id="keywords" name="keywords" type="text" maxlength="2000" placeholder="cybersecurity, threat detection" autocomplete="off" aria-describedby="keywords-help">
+              <p id="keywords-help" class="field-help">Separate topics with commas. Specific phrases carry more weight.</p>
+              <button class="primary-button" id="submit-button" type="submit"><span>Find my matches</span><svg class="icon" aria-hidden="true"><use href="#icon-arrow"/></svg></button>
+            </form>
+            <div class="examples"><p>Or explore a starting point</p><div class="example-options"><button type="button" data-example="cyber">Cybersecurity <span>↗</span></button><button type="button" data-example="culture">Cultural heritage <span>↗</span></button><button type="button" data-example="software">Software services <span>↗</span></button></div></div>
+            <p class="privacy-note"><svg class="icon" aria-hidden="true"><use href="#icon-shield"/></svg><span id="privacy-copy">No account. No saved project descriptions.</span></p>
+          </aside>
 
-            <label for="keywords">Keywords <span class="optional">optional</span></label>
-            <input id="keywords" name="keywords" type="text" placeholder="battery, recycling, energy storage" autocomplete="off">
-            <p class="field-help">Separate topics with commas. These receive extra weight: include the topics that matter most to your project.</p>
+          <section class="results-panel" aria-labelledby="results-title">
+            <div class="results-heading"><div><p class="eyebrow" id="results-eyebrow">THE CURRENT LANDSCAPE</p><h3 id="results-title" tabindex="-1">Open opportunities <span id="result-count" class="count-badge">—</span></h3></div><button id="clear-search" class="text-button" type="button" hidden>Clear search <span aria-hidden="true">×</span></button></div>
+            <div class="results-toolbar"><p id="results-subtitle" role="status">Loading the latest open calls…</p><div class="result-controls"><label class="sr-only" for="kind">Opportunity type</label><select id="kind" name="kind" form="match-form"><option value="">Grants &amp; tenders</option><option value="grant">Grants only</option><option value="tender">Tenders only</option></select><label class="sr-only" for="sort">Sort opportunities</label><select id="sort"><option value="deadline">Closing soon</option><option value="relevance" disabled>Best match</option></select></div></div>
+            <div id="search-notes" class="search-notes" hidden></div>
+            <div id="results" class="results-list" aria-busy="true"><div class="loading-state"><span class="loading-line"></span><span class="loading-line"></span><span class="loading-line"></span><p>Finding the latest openings…</p></div></div>
+            <div class="results-bottom"><span id="visible-count"></span><button id="load-more" class="secondary-button" type="button" hidden>Show more opportunities <svg class="icon" aria-hidden="true"><use href="#icon-plus"/></svg></button></div>
+          </section>
+        </div>
+      </section>
 
-            <label for="kind">Opportunity type</label>
-            <select id="kind" name="kind">
-              <option value="">Grants and tenders</option>
-              <option value="grant">Grants only</option>
-              <option value="tender">Tenders only</option>
-            </select>
-
-            <button class="primary-button" id="submit-button" type="submit">Find matching opportunities <span aria-hidden="true">→</span></button>
-          </form>
-        </section>
-
-        <section class="results-panel" aria-labelledby="results-title">
-          <div class="section-heading"><span class="step">02</span><div><h2 id="results-title">Matches</h2><p id="results-subtitle">Enter your project details to see relevant opportunities.</p></div></div>
-          <div id="search-notes" class="search-notes" role="status" hidden></div>
-          <div id="results" class="results-list" aria-live="polite">
-            <div class="empty-state"><div class="empty-icon" aria-hidden="true">✦</div><h3>Ready when you are</h3><p>Your results will appear here, with relevance scores, matching terms and links to the official call pages.</p></div>
-          </div>
-        </section>
-      </div>
+      <section id="method" class="method-section" aria-labelledby="method-title">
+        <div class="method-intro"><p class="eyebrow">02 / OUR APPROACH</p><h2 id="method-title">Follow the evidence.<br><span>Find your direction.</span></h2><p>A useful shortlist starts with understanding why an opportunity appeared.</p><a href="https://github.com/AlessandroPozzetti/eu-funding-opportunities/tree/main/evaluation" target="_blank" rel="noopener noreferrer" class="inline-link">Read the evaluation <svg class="icon" aria-hidden="true"><use href="#icon-external"/></svg></a></div>
+        <div class="method-steps"><article><span>01</span><div><h3>Fresh opportunities, direct sources.</h3><p>Grants and procurement notices from the European Commission’s Funding &amp; Tenders Portal, collected nightly and checked against their closing dates.</p></div></article><article><span>02</span><div><h3>See what connects.</h3><p>Your project’s topics are compared with the call’s title, keywords and description. Each match includes source excerpts and topics that still need checking.</p></div></article><article><span>03</span><div><h3>Make an informed next move.</h3><p>The relevance index helps you compare results within a search. Check the official documents for country, applicant, budget and consortium requirements.</p></div></article></div>
+      </section>
     </main>
 
-    <footer class="site-footer">
-      <p>Source: <a href="https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/home" target="_blank" rel="noopener noreferrer">European Commission Funding &amp; Tenders Portal</a>.</p>
-      <p>The relevance index measures text evidence, not probability of funding or eligibility. Always check the official call documents.</p>
-    </footer>
+    <footer class="site-footer"><div><a class="footer-brand" href="./">EU Opportunity Finder<span>↗</span></a><p>An independent view of European opportunities.</p></div><div class="footer-details"><a href="https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/home" target="_blank" rel="noopener noreferrer">European Commission · Source portal <span>↗</span></a><p>Relevance is an index of text evidence, not a probability of funding.<br>Eligibility is not assessed. Coverage is limited to the source portal.</p></div></footer>
   </div>
 </body>
 </html>
