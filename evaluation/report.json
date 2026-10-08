@@ -3,7 +3,7 @@
   "as_of": "2026-10-08T18:16:06.319186+00:00",
   "corpus_size": 339,
   "corpus_sha256": "33b653c89eeddfb0701cacb606d7624d80b2a029629248a00d6e9384373cad9c",
-  "config_sha256": "4a541ef6d967670b09a72480a30cb5a24a10b7638baa7c88c86112e20941bc6b",
+  "config_sha256": "6a1bbf19867c12d4896a9a750c2dbab7c3ff24bf6c87dbad96c7434ade85e88f",
   "summary": {
     "en": {
       "baseline": {
@@ -612,27 +612,27 @@
             {
               "id": "tender:fbbea1db-f251-41de-a4db-8c2c9e16b2ae-CN",
               "title": "Dynamic Purchasing System (DPS) for Provision of Software Development, Project Management and Quality Assurance Services (PROMAQ DPS 1: Software development and maintenance services)",
-              "score": 67.7
+              "score": 92.9
             },
             {
               "id": "tender:8a8d8225-ef94-4781-b70a-72acca9f4291-CN",
               "title": "Dynamic Purchasing System (DPS) for IT SERVICES RELATED TO APPLICATION DEVELOPMENT AND MAINTENANCE",
-              "score": 67.2
+              "score": 92.2
             },
             {
               "id": "tender:2d7fbaee-6f9e-4d97-9c0a-0366116f8a84-CN",
               "title": "Acquisition, Delivery, Installation and Hardware and Software Maintenance of Discoverer++ AI Supercomputer",
-              "score": 65.5
+              "score": 89.8
+            },
+            {
+              "id": "tender:3bbba72d-9117-4558-bdcd-fc8a0c76af18-CN",
+              "title": "Dynamic Purchasing System (DPS) for Provision of Software Development, Project Management and Quality Assurance Services (PROMAQ DPS 2: Project management, quality assurance and other support services)",
+              "score": 38.7
             },
             {
               "id": "tender:d307cb87-9c3a-4f71-82ce-21441f98284b-CN",
               "title": "Provision of ICT services: Project Management Support, Plone Maintenance and Microsoft Maintenance and Developments",
-              "score": 45.7
-            },
-            {
-              "id": "tender:51e3ba95-4a41-400b-824a-fafcad66ba85-CN",
-              "title": "Supply and Maintenance of a GC-MS/MS-QQQ",
-              "score": 43.9
+              "score": 36.9
             }
           ],
           "hit_at_5": true,

@@ -9,6 +9,7 @@ from bandi_eu.core import assess
 from bandi_eu.matching import CONFIG, analyze
 
 ROOT = Path(__file__).resolve().parents[1]
+SOFTWARE_DESCRIPTION = "We develop software applications and provide ongoing maintenance for public organisations."
 
 
 def record(key, title, description="", kind="grant", **extra):
@@ -71,10 +72,54 @@ class MatchingTests(unittest.TestCase):
         self.assertEqual(result["eligibility"], "Not assessed")
         self.assertTrue(any(e["topic"] == "wood" and "title" in e["fields"] for e in result["evidence"]))
 
+    def test_ongoing_does_not_change_software_matches_or_missing_topics(self):
+        rows = {
+            "complete": record("complete", "Software development and maintenance",
+                               "Applications for public organisations", kind="tender"),
+            "partial": record("partial", "Software application development",
+                              "Applications for public organisations", kind="tender"),
+            "unrelated": record("unrelated", "Ongoing office activities", kind="tender"),
+        }
+        for keywords in ([], ["software", "maintenance"], ["software", "ongoing maintenance"]):
+            with self.subTest(keywords=keywords):
+                result = assess(rows, SOFTWARE_DESCRIPTION, keywords, kind="tender")
+                plain = assess(rows, SOFTWARE_DESCRIPTION.replace("ongoing ", ""), keywords, kind="tender")
+                self.assertEqual(result, plain)
+                self.assertEqual(result["query"]["topics"], ["maintenance", "software"])
+                self.assertEqual([r["id"] for r in result["results"]], ["complete", "partial"])
+                self.assertEqual(result["results"][0]["missing_topics"], [])
+                self.assertEqual(result["results"][1]["missing_topics"], ["maintenance"])
+
+    def test_technical_modifiers_remain_meaningful(self):
+        rows = {
+            "routine": record("routine", "Software maintenance"),
+            "predictive": record("predictive", "Software for predictive maintenance"),
+        }
+        results = assess(rows, "Software for predictive maintenance", ["software", "maintenance"])["results"]
+        self.assertEqual([r["id"] for r in results], ["predictive", "routine"])
+        self.assertEqual(results[0]["missing_topics"], [])
+        self.assertEqual(results[1]["missing_topics"], ["predictive"])
+
+    def test_software_description_retrieves_relevant_frozen_tenders_without_false_gaps(self):
+        fixture = json.loads((ROOT / "evaluation/fixtures/opportunities.json").read_text())
+        rows = {row["id"]: row for row in fixture["records"]}
+        targets = {"tender:fbbea1db-f251-41de-a4db-8c2c9e16b2ae-CN",
+                   "tender:8a8d8225-ef94-4781-b70a-72acca9f4291-CN"}
+        for keywords in ([], ["software", "maintenance"]):
+            with self.subTest(keywords=keywords):
+                result = assess(rows, SOFTWARE_DESCRIPTION, keywords, kind="tender",
+                                now=datetime.fromisoformat(fixture["as_of"]))
+                self.assertEqual({r["id"] for r in result["results"][:2]}, targets)
+                for row in result["results"][:2]:
+                    self.assertEqual(row["missing_topics"], [])
+
     @unittest.skipUnless(shutil.which("node"), "Node.js is needed for browser/server parity")
     def test_browser_and_python_agree_on_all_frozen_scenarios(self):
         fixture = json.loads((ROOT / "evaluation/fixtures/opportunities.json").read_text())
         cases = json.loads((ROOT / "evaluation/cases.json").read_text())["cases"]
+        cases += [dict(id=f"software_description_{index}", description=SOFTWARE_DESCRIPTION,
+                       keywords=keywords, kind="tender")
+                  for index, keywords in enumerate(([], ["software", "maintenance"]))]
         code = """
           const fs = require('node:fs');
           const {assessOpportunities} = require('./web/matcher.js');

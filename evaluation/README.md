@@ -36,7 +36,7 @@ Judgments are incomplete: most query/document pairs are unlabelled. The reported
 
 ## How the index is calculated
 
-1. Normalize accents and conservative English plurals. Resolve the maintained concept aliases. Preserve multiword priority phrases after normalization. This is dictionary-assisted lexical retrieval, not an embedding model or an LLM assessment.
+1. Normalize accents and conservative English plurals. Resolve the maintained concept aliases and remove configured stopwords. A non-topical modifier such as `ongoing` contributes neither to the score nor to missing-topic explanations; technical modifiers such as `predictive` remain meaningful. Preserve multiword priority phrases after normalization. This is dictionary-assisted lexical retrieval, not an embedding model or an LLM assessment.
 2. For a cascade-funding record, use the specific call title as the primary title and the parent programme as weaker context. A match only in programme context cannot qualify a result.
 3. Compute document frequency over **all open records before the grant/tender filter**. The same record keeps the same score when the type filter changes.
 4. Apply an IDF weight `log(1 + (N - df + 0.5) / (df + 0.5))`, multiplied by 2.5 for priority terms and by 0.12 for generic terms.
