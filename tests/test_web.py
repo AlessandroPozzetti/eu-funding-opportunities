@@ -47,6 +47,8 @@ class PortalTests(unittest.TestCase):
                 self.assertEqual(matches["results"][0]["kind"], "grant")
                 with urlopen(base + "/") as response:
                     self.assertIn(b"EU Opportunity Finder", response.read())
+                with urlopen(base + "/matcher.js") as response:
+                    self.assertIn(b"rankOpportunities", response.read())
             finally:
                 server.shutdown()
                 server.server_close()

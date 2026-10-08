@@ -5,3 +5,4 @@ __pycache__/
 data/*.sqlite3
 data/*.sqlite3-*
 data/*.tmp
+public_site/

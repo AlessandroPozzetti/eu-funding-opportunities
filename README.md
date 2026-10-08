@@ -7,19 +7,22 @@ A small, testable project that collects grants and procurement notices from the 
 | Path | Purpose |
 | --- | --- |
 | `bandi_eu/core.py` | API client, normalization, collection, storage, and lexical matching |
+| `bandi_eu/site.py` | Compact snapshot and static portal builder |
 | `bandi_eu/web.py` | Local HTTP server and JSON endpoints |
 | `web/` | Responsive portal interface |
 | `data/opportunities.jsonl` | Collected records, one JSON object per line |
 | `tests/` | Collector and portal tests |
 | `.github/workflows/nightly-sync.yml` | Nightly and manual GitHub Actions collection |
 | `scripts/publish_first_collection.sh` | One-time publisher for the first collection and portal |
+| `scripts/publish_portal.sh` | Publish the browser portal and enable GitHub Pages |
 
 ## First collection
 
 Python 3.10 or newer is required. There are no third-party packages or private API keys.
 
+From the repository root:
+
 ```bash
-cd /Users/ale/personal/bandi_europei
 python3 -m unittest discover -s tests -v
 python3 -m bandi_eu sync
 python3 -m bandi_eu audit
@@ -54,6 +57,18 @@ python3 -m bandi_eu match "We develop sustainable batteries for the power grid" 
 To publish the first collection from a Terminal authenticated with GitHub CLI, run `bash scripts/publish_first_collection.sh`. It stages the project files, creates a commit, pushes `main`, and requests a fresh workflow run. It is safe to run again if the commit already exists; it still requests a fresh run.
 
 The GitHub Actions workflow runs every day at **21:00 Europe/Rome** and also supports manual runs from the Actions tab. The timezone setting follows daylight saving time. GitHub [documents that scheduled runs can be delayed or dropped](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows); a dedicated scheduler is needed for a guaranteed start at an exact minute.
+
+## Public portal
+
+The same nightly workflow builds a compact snapshot of open grants and tenders, then deploys it to GitHub Pages. The public portal runs its text matching in each visitor's browser; project descriptions and keywords are not sent to this repository's server. It checks deadlines again in the browser, so an opportunity disappears from search after its deadline even before the next collection.
+
+The repository owner can publish this version from the repository root in a Terminal authenticated with GitHub CLI:
+
+```bash
+bash scripts/publish_portal.sh
+```
+
+The script commits the portal changes, incorporates the latest dataset commit from `main`, pushes, enables GitHub Pages with GitHub Actions as its source, and starts a fresh collection and deployment. Once the run succeeds, the expected site URL is **https://alessandropozzetti.github.io/eu-funding-opportunities/**. GitHub Pages hosts the browser portal; the Python server remains useful for local development.
 
 The workflow requests `contents: write` to commit the updated JSONL. If it cannot push, check *Settings → Actions → General → Workflow permissions* in the repository. The dataset grows with each run; if it becomes too large for Git, move persistence to a managed database.
 

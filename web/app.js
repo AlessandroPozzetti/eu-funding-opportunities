@@ -1,7 +1,51 @@
 const $ = (id) => document.getElementById(id);
+const staticMode = document.documentElement.dataset.mode === "static";
+let staticDataPromise;
+
+function loadStaticData() {
+  if (!staticDataPromise) {
+    staticDataPromise = fetch("opportunities.json", { cache: "no-store" }).then((response) => {
+      if (!response.ok) throw new Error("Unable to load the current opportunities");
+      return response.json();
+    });
+  }
+  return staticDataPromise;
+}
+
+async function getStatus() {
+  if (staticMode) {
+    const snapshot = await loadStaticData();
+    const active = snapshot.records.filter((row) => window.OpportunityMatcher.isOpenOpportunity(row));
+    return {
+      stored: snapshot.stored,
+      active: active.length,
+      active_grants: active.filter((row) => row.kind === "grant").length,
+      active_tenders: active.filter((row) => row.kind === "tender").length,
+      last_collected: snapshot.last_collected,
+    };
+  }
+  const response = await fetch("/api/status", { cache: "no-store" });
+  if (!response.ok) throw new Error("Unable to read dataset status");
+  return response.json();
+}
+
+async function getMatches(payload) {
+  if (staticMode) {
+    const snapshot = await loadStaticData();
+    const results = window.OpportunityMatcher.rankOpportunities(
+      snapshot.records, payload.description, payload.keywords, payload.kind, snapshot.stopwords);
+    return { results, count: results.length };
+  }
+  const response = await fetch("/api/match", {
+    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload),
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error || "Matching failed");
+  return data;
+}
 
 function formatDate(value) {
-  const date = new Date(value);
+  const date = new Date(window.OpportunityMatcher.parseSourceDate(value));
   if (Number.isNaN(date.getTime())) return value || "Unknown";
   return new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "Europe/Brussels" }).format(date);
 }
@@ -65,15 +109,15 @@ function renderResult(result) {
 
 async function refreshStatus() {
   try {
-    const response = await fetch("/api/status", { cache: "no-store" });
-    if (!response.ok) throw new Error("Unable to read dataset status");
-    const status = await response.json();
+    const status = await getStatus();
     $("active-count").textContent = status.active.toLocaleString("en-GB");
     $("grant-count").textContent = `${status.active_grants.toLocaleString("en-GB")} grants`;
     $("tender-count").textContent = `${status.active_tenders.toLocaleString("en-GB")} tenders`;
     $("last-collected").textContent = status.last_collected ? `Last collected: ${formatDate(status.last_collected)}` : "No collection has run yet";
     if (!status.stored) {
-      $("dataset-warning").textContent = "The dataset is empty. Run `python3 -m bandi_eu sync` from the project directory, then refresh this page.";
+      $("dataset-warning").textContent = staticMode
+        ? "No opportunities have been published yet. Please try again after the next update."
+        : "The dataset is empty. Run `python3 -m bandi_eu sync` from the project directory, then refresh this page.";
       $("dataset-warning").hidden = false;
     }
   } catch (error) {
@@ -96,9 +140,7 @@ $("match-form").addEventListener("submit", async (event) => {
       keywords: $("keywords").value.split(",").map((part) => part.trim()).filter(Boolean),
       kind: $("kind").value,
     };
-    const response = await fetch("/api/match", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error || "Matching failed");
+    const data = await getMatches(payload);
     $("results-subtitle").textContent = `${data.count} relevant open ${data.count === 1 ? "opportunity" : "opportunities"} found. Sorted by text match.`;
     if (!data.count) {
       results.replaceChildren(emptyState("No matches yet", "Try broader terms, add English keywords, or choose both grants and tenders."));
