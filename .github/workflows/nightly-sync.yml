@@ -17,7 +17,7 @@ concurrency:
 
 jobs:
   sync:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v7
@@ -46,19 +46,19 @@ jobs:
       - name: Build the public portal
         run: python -m bandi_eu build-site --output public_site
       - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
       - name: Upload the public portal
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v5
         with:
           path: public_site
 
   deploy:
     needs: sync
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Publish the public portal
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5

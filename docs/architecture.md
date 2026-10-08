@@ -68,6 +68,7 @@ Scores are query-dependent heuristics. They are neither calibrated probabilities
 
 - `ci.yml` validates pull requests and code changes without invoking the upstream API.
 - `nightly-sync.yml` validates, collects, versions the catalogue, builds the public projection and deploys it through the Pages artifact mechanism.
+- Hosted jobs explicitly use `ubuntu-24.04` to avoid automatic operating-system changes through `ubuntu-latest`. The Pages actions use Node.js 24, including the upload action's artifact dependency. Runner upgrades should be validated before changing the pinned image label.
 - The schedule is 21:00 `Europe/Rome`, including daylight-saving changes. [GitHub scheduled workflows can be delayed or dropped](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows).
 - Pages receives only the generated distribution. Dataset history and evaluation fixtures remain repository assets.
 
