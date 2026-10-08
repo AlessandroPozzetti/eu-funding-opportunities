@@ -28,6 +28,8 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Test the browser matcher
         run: node tests/test_matcher.js
+      - name: Check matching quality against the frozen benchmark
+        run: python scripts/evaluate_matcher.py --check
       - name: Download opportunities
         run: python -m bandi_eu sync
       - name: Commit the dataset

@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Explore open EU funding and procurement opportunities relevant to your project.">
   <title>EU Opportunity Finder</title>
-  <link rel="stylesheet" href="styles.css">
-  <script src="matcher.js" defer></script>
-  <script src="app.js" defer></script>
+  <link rel="stylesheet" href="styles.css?v=2">
+  <script src="matcher.js?v=2" defer></script>
+  <script src="app.js?v=2" defer></script>
 </head>
 <body>
   <div class="page-shell">
     <header class="site-header">
-      <a class="brand" href="/" aria-label="EU Opportunity Finder home">
+      <a class="brand" href="./" aria-label="EU Opportunity Finder home">
         <span class="brand-mark" aria-hidden="true">✳</span>
         <span>EU Opportunity Finder</span>
       </a>
@@ -41,11 +41,11 @@
           <form id="match-form">
             <label for="description">What do you want to do?</label>
             <textarea id="description" name="description" rows="7" maxlength="4000" placeholder="Example: We develop recyclable batteries and energy storage systems for local power grids." required></textarea>
-            <p class="field-help">A few sentences are enough. The current matcher works best with English text.</p>
+            <p class="field-help">Use English and describe the activity, subject and intended users. English is the main language used to test this matcher.</p>
 
             <label for="keywords">Keywords <span class="optional">optional</span></label>
             <input id="keywords" name="keywords" type="text" placeholder="battery, recycling, energy storage" autocomplete="off">
-            <p class="field-help">Separate keywords with commas. Add technical terms that might appear in a call.</p>
+            <p class="field-help">Separate topics with commas. These receive extra weight: include the topics that matter most to your project.</p>
 
             <label for="kind">Opportunity type</label>
             <select id="kind" name="kind">
@@ -60,6 +60,7 @@
 
         <section class="results-panel" aria-labelledby="results-title">
           <div class="section-heading"><span class="step">02</span><div><h2 id="results-title">Matches</h2><p id="results-subtitle">Enter your project details to see relevant opportunities.</p></div></div>
+          <div id="search-notes" class="search-notes" role="status" hidden></div>
           <div id="results" class="results-list" aria-live="polite">
             <div class="empty-state"><div class="empty-icon" aria-hidden="true">✦</div><h3>Ready when you are</h3><p>Your results will appear here, with relevance scores, matching terms and links to the official call pages.</p></div>
           </div>
@@ -69,7 +70,7 @@
 
     <footer class="site-footer">
       <p>Source: <a href="https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/home" target="_blank" rel="noopener noreferrer">European Commission Funding &amp; Tenders Portal</a>.</p>
-      <p>Scores measure text overlap. Always confirm deadlines and eligibility in the official call documents.</p>
+      <p>The relevance index measures text evidence, not probability of funding or eligibility. Always check the official call documents.</p>
     </footer>
   </div>
 </body>

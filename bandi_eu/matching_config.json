@@ -1,0 +1,401 @@
+{
+  "version": "2.0",
+  "stopwords": "a an and are as at be been being by for from has have in into is it its of on or our that the their these this those to was we were will with would you your want wish aim aims develop developing build building create creating provide providing offer offering project projects solution solutions tool tools system systems service services support innovative innovation research development european europe eu funding grant call programme opportunity opportunities voglio vorrei creare sviluppare progetto progetti una uno un di da del della delle dei gli il la le lo i e o per con su nel nella che si sono questo questi tra come agli alle all allo al piccoli piccole piccolo piccola offrire vogliamo realizziamo sviluppiamo conduct conducting",
+  "generic_terms": [
+    "digital",
+    "energy",
+    "power",
+    "technology",
+    "data",
+    "platform",
+    "local",
+    "regional",
+    "national",
+    "international",
+    "new",
+    "improve",
+    "improving",
+    "advanced",
+    "business",
+    "company",
+    "organisation",
+    "sustainable",
+    "sustainability",
+    "environment",
+    "capacity",
+    "network",
+    "access",
+    "management",
+    "monitoring",
+    "assessment",
+    "analysis",
+    "small",
+    "medium",
+    "large",
+    "sector",
+    "public",
+    "private",
+    "operation",
+    "implementation",
+    "activity",
+    "product",
+    "process",
+    "application",
+    "equipment",
+    "technical",
+    "use",
+    "using",
+    "based",
+    "help",
+    "enable",
+    "enabling",
+    "work",
+    "include",
+    "including",
+    "objective",
+    "SME"
+  ],
+  "concepts": {
+    "battery": [
+      "battery",
+      "batteries",
+      "batteria",
+      "batterie"
+    ],
+    "recycling": [
+      "recycling",
+      "recycle",
+      "recycled",
+      "recyclable",
+      "riciclo",
+      "riciclaggio",
+      "riciclabili"
+    ],
+    "energy storage": [
+      "energy storage",
+      "electricity storage",
+      "accumulo energetico",
+      "stoccaggio energetico"
+    ],
+    "power grid": [
+      "power grid",
+      "power grids",
+      "electricity grid",
+      "electricity grids",
+      "electrical grid",
+      "smart grid",
+      "smart grids",
+      "rete elettrica",
+      "reti elettriche"
+    ],
+    "photovoltaics": [
+      "photovoltaic",
+      "photovoltaics",
+      "PV",
+      "solar panel",
+      "solar panels",
+      "solar electricity",
+      "fotovoltaico",
+      "fotovoltaici",
+      "pv"
+    ],
+    "agrivoltaics": [
+      "agrivoltaic",
+      "agrivoltaics",
+      "agripv",
+      "agri pv",
+      "agrivoltaico"
+    ],
+    "wind energy": [
+      "wind energy",
+      "wind power",
+      "wind turbine",
+      "wind turbines",
+      "eolico",
+      "energia eolica"
+    ],
+    "hydrogen": [
+      "hydrogen",
+      "idrogeno"
+    ],
+    "nuclear fusion": [
+      "nuclear fusion",
+      "fusion energy",
+      "fusion power",
+      "fusione nucleare"
+    ],
+    "cybersecurity": [
+      "cybersecurity",
+      "cyber security",
+      "cybersecure",
+      "sicurezza informatica"
+    ],
+    "cyberattack": [
+      "cyberattack",
+      "cyberattacks",
+      "cyber attack",
+      "cyber attacks",
+      "attacchi informatici"
+    ],
+    "artificial intelligence": [
+      "artificial intelligence",
+      "AI",
+      "intelligenza artificiale"
+    ],
+    "machine learning": [
+      "machine learning",
+      "apprendimento automatico"
+    ],
+    "SME": [
+      "sme",
+      "smes",
+      "small and medium sized enterprises",
+      "small and medium sized enterprise",
+      "small businesses",
+      "small business",
+      "pmi",
+      "piccole imprese"
+    ],
+    "software": [
+      "software",
+      "application development",
+      "sviluppo applicazioni"
+    ],
+    "cloud": [
+      "cloud",
+      "cloud computing"
+    ],
+    "museum": [
+      "museum",
+      "museums",
+      "museo",
+      "musei"
+    ],
+    "cultural heritage": [
+      "cultural heritage",
+      "patrimonio culturale",
+      "beni culturali"
+    ],
+    "virtual reality": [
+      "virtual reality",
+      "VR",
+      "realta virtuale",
+      "vr"
+    ],
+    "extended reality": [
+      "extended reality",
+      "XR",
+      "xr"
+    ],
+    "virtual tour": [
+      "virtual tour",
+      "virtual tours",
+      "visita virtuale",
+      "visite virtuali"
+    ],
+    "agriculture": [
+      "agriculture",
+      "agricultural",
+      "farming",
+      "agricoltura",
+      "agricolo",
+      "agricola"
+    ],
+    "farmer": [
+      "farmer",
+      "farmers",
+      "agricoltore",
+      "agricoltori"
+    ],
+    "soil": [
+      "soil",
+      "soils",
+      "suolo",
+      "terreno",
+      "terreni"
+    ],
+    "regenerative grazing": [
+      "regenerative grazing",
+      "pascolo rigenerativo"
+    ],
+    "livestock": [
+      "livestock",
+      "bestiame",
+      "allevamento"
+    ],
+    "pollinator": [
+      "pollinator",
+      "pollinators",
+      "impollinatori"
+    ],
+    "biodiversity": [
+      "biodiversity",
+      "biodiversita"
+    ],
+    "forest": [
+      "forest",
+      "forests",
+      "forestry",
+      "foresta",
+      "foreste",
+      "forestale"
+    ],
+    "wood": [
+      "wood",
+      "wooden",
+      "timber",
+      "legno"
+    ],
+    "construction": [
+      "construction",
+      "costruzione",
+      "costruzioni",
+      "edilizia"
+    ],
+    "renovation": [
+      "renovation",
+      "renovations",
+      "refurbishment",
+      "ristrutturazione"
+    ],
+    "water": [
+      "water",
+      "acqua",
+      "idrico",
+      "idrica"
+    ],
+    "wastewater": [
+      "wastewater",
+      "waste water",
+      "acque reflue"
+    ],
+    "drought": [
+      "drought",
+      "droughts",
+      "siccita"
+    ],
+    "food waste": [
+      "food waste",
+      "spreco alimentare",
+      "sprechi alimentari"
+    ],
+    "food safety": [
+      "food safety",
+      "sicurezza alimentare"
+    ],
+    "healthcare": [
+      "healthcare",
+      "health care",
+      "sanita",
+      "assistenza sanitaria"
+    ],
+    "medical": [
+      "medical",
+      "medico",
+      "medici",
+      "medica",
+      "mediche"
+    ],
+    "cleaning": [
+      "cleaning",
+      "pulizia",
+      "pulizie"
+    ],
+    "office": [
+      "office",
+      "offices",
+      "ufficio",
+      "uffici"
+    ],
+    "maintenance": [
+      "maintenance",
+      "manutenzione"
+    ],
+    "printing": [
+      "printing",
+      "stampa"
+    ],
+    "furniture": [
+      "furniture",
+      "furnishing",
+      "arredi",
+      "mobili"
+    ],
+    "training": [
+      "training",
+      "formazione"
+    ],
+    "education": [
+      "education",
+      "educational",
+      "istruzione",
+      "educazione"
+    ],
+    "fact checking": [
+      "fact checking",
+      "factchecking",
+      "factchecker",
+      "factcheckers"
+    ],
+    "disinformation": [
+      "disinformation",
+      "disinformazione"
+    ],
+    "transport": [
+      "transport",
+      "transportation",
+      "trasporto",
+      "trasporti"
+    ],
+    "electric vehicle": [
+      "electric vehicle",
+      "electric vehicles",
+      "EV",
+      "veicoli elettrici",
+      "ev"
+    ],
+    "robotics": [
+      "robot",
+      "robots",
+      "robotics",
+      "robotica"
+    ],
+    "satellite": [
+      "satellite",
+      "satellites",
+      "satelliti"
+    ],
+    "earth observation": [
+      "earth observation",
+      "osservazione della terra"
+    ],
+    "climate change": [
+      "climate change",
+      "cambiamento climatico",
+      "cambiamenti climatici"
+    ],
+    "greenhouse gas": [
+      "greenhouse gas",
+      "greenhouse gases",
+      "GHG",
+      "gas serra",
+      "ghg"
+    ],
+    "5G": [
+      "5g"
+    ],
+    "6G": [
+      "6g"
+    ],
+    "internet of things": [
+      "iot",
+      "internet of things"
+    ],
+    "large language model": [
+      "llm",
+      "llms",
+      "large language model",
+      "large language models"
+    ]
+  }
+}

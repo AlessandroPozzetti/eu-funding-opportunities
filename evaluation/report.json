@@ -1,0 +1,1208 @@
+{
+  "label_provenance": "Author-assessed pilot judgments from the frozen source texts, not independently reviewed by funding experts. Targets are non-exhaustive and measure topical retrieval, not eligibility.",
+  "as_of": "2026-10-08T18:16:06.319186+00:00",
+  "corpus_size": 339,
+  "corpus_sha256": "33b653c89eeddfb0701cacb606d7624d80b2a029629248a00d6e9384373cad9c",
+  "config_sha256": "4a541ef6d967670b09a72480a30cb5a24a10b7638baa7c88c86112e20941bc6b",
+  "summary": {
+    "en": {
+      "baseline": {
+        "target_queries": 13,
+        "target_queries_hit_at_5": 12,
+        "mean_known_target_recall_at_5": 0.8846,
+        "mean_reciprocal_rank": 0.8894,
+        "pairs_passed": 13,
+        "pairs_total": 15,
+        "empty_queries_passed": 1,
+        "empty_queries_total": 2
+      },
+      "current": {
+        "target_queries": 13,
+        "target_queries_hit_at_5": 13,
+        "mean_known_target_recall_at_5": 1.0,
+        "mean_reciprocal_rank": 1.0,
+        "pairs_passed": 15,
+        "pairs_total": 15,
+        "empty_queries_passed": 2,
+        "empty_queries_total": 2
+      }
+    },
+    "it": {
+      "baseline": {
+        "target_queries": 2,
+        "target_queries_hit_at_5": 0,
+        "mean_known_target_recall_at_5": 0.0,
+        "mean_reciprocal_rank": 0.0,
+        "pairs_passed": 0,
+        "pairs_total": 0,
+        "empty_queries_passed": 0,
+        "empty_queries_total": 0
+      },
+      "current": {
+        "target_queries": 2,
+        "target_queries_hit_at_5": 2,
+        "mean_known_target_recall_at_5": 1.0,
+        "mean_reciprocal_rank": 1.0,
+        "pairs_passed": 0,
+        "pairs_total": 0,
+        "empty_queries_passed": 0,
+        "empty_queries_total": 0
+      }
+    }
+  },
+  "cases": [
+    {
+      "id": "cybersecurity_smes",
+      "language": "en",
+      "systems": {
+        "baseline": {
+          "target_ranks": [
+            1
+          ],
+          "returned": 122,
+          "pairs_passed": 1,
+          "pairs_total": 1,
+          "top_results": [
+            {
+              "id": "grant:52303917TOPICSen",
+              "title": "Strengthening cybersecurity capacities of European SMEs with cybersecure AI-powered solutions",
+              "score": 36.1
+            },
+            {
+              "id": "grant:52303934TOPICSen",
+              "title": "Enhancing the NCC Network",
+              "score": 28.6
+            },
+            {
+              "id": "grant:52303942TOPICSen",
+              "title": "Strengthening EU cybersecurity capacities & capabilities in line with legislative requirements",
+              "score": 23.0
+            },
+            {
+              "id": "grant:52303908TOPICSen",
+              "title": "Cybersecure tools, technologies and services relying on AI",
+              "score": 22.9
+            },
+            {
+              "id": "grant:52303926TOPICSen",
+              "title": "Coordinated preparedness testing and other preparedness actions",
+              "score": 17.5
+            }
+          ],
+          "hit_at_5": true,
+          "known_target_recall_at_5": 1.0,
+          "reciprocal_rank": 1.0
+        },
+        "current": {
+          "target_ranks": [
+            1
+          ],
+          "returned": 23,
+          "pairs_passed": 1,
+          "pairs_total": 1,
+          "top_results": [
+            {
+              "id": "grant:52303917TOPICSen",
+              "title": "Strengthening cybersecurity capacities of European SMEs with cybersecure AI-powered solutions",
+              "score": 70.0
+            },
+            {
+              "id": "grant:52303908TOPICSen",
+              "title": "Cybersecure tools, technologies and services relying on AI",
+              "score": 66.6
+            },
+            {
+              "id": "grant:52303942TOPICSen",
+              "title": "Strengthening EU cybersecurity capacities & capabilities in line with legislative requirements",
+              "score": 47.2
+            },
+            {
+              "id": "grant:52303926TOPICSen",
+              "title": "Coordinated preparedness testing and other preparedness actions",
+              "score": 44.6
+            },
+            {
+              "id": "grant:52303950TOPICSen",
+              "title": "Dual-use technologies",
+              "score": 42.2
+            }
+          ],
+          "hit_at_5": true,
+          "known_target_recall_at_5": 1.0,
+          "reciprocal_rank": 1.0
+        }
+      }
+    },
+    {
+      "id": "wood_construction",
+      "language": "en",
+      "systems": {
+        "baseline": {
+          "target_ranks": [
+            1
+          ],
+          "returned": 65,
+          "pairs_passed": 1,
+          "pairs_total": 1,
+          "top_results": [
+            {
+              "id": "grant:13903COMPETITIVE_CALLen",
+              "title": "Climate-smart use of wood in the construction sector to support the New European Bauhaus",
+              "score": 34.0
+            },
+            {
+              "id": "grant:15661COMPETITIVE_CALLen",
+              "title": "European partnership: Forests and Forestry for a Sustainable Future",
+              "score": 19.6
+            },
+            {
+              "id": "grant:50218126TOPICSen",
+              "title": "Advancing sustainable maintenance and repair measures for existing buildings",
+              "score": 17.2
+            },
+            {
+              "id": "grant:50218290TOPICSen",
+              "title": "Structurally addressing homelessness through coordinated social infrastructure and services in neighbourhoods",
+              "score": 9.1
+            },
+            {
+              "id": "tender:32b3703c-e9ef-4dc4-9afa-79b9f0e741ed-CN",
+              "title": "Harmonising the implementation of EU legal requirements in the fields of Plant Health and Plant Protection Products through the 'Better Training for Safer Food' Initiative",
+              "score": 8.1
+            }
+          ],
+          "hit_at_5": true,
+          "known_target_recall_at_5": 1.0,
+          "reciprocal_rank": 1.0
+        },
+        "current": {
+          "target_ranks": [
+            1
+          ],
+          "returned": 5,
+          "pairs_passed": 1,
+          "pairs_total": 1,
+          "top_results": [
+            {
+              "id": "grant:13903COMPETITIVE_CALLen",
+              "title": "WoodStock Grants to support climate-smart wood construction solutions",
+              "score": 64.2
+            },
+            {
+              "id": "grant:15661COMPETITIVE_CALLen",
+              "title": "ForestPathways – Building Knowledge and Solutions for Resilient Forests and Sustainable Forest-Based Futures",
+              "score": 48.4
+            },
+            {
+              "id": "grant:50218126TOPICSen",
+              "title": "Advancing sustainable maintenance and repair measures for existing buildings",
+              "score": 21.0
+            },
+            {
+              "id": "grant:50218290TOPICSen",
+              "title": "Structurally addressing homelessness through coordinated social infrastructure and services in neighbourhoods",
+              "score": 17.5
+            },
+            {
+              "id": "grant:52210430TOPICSen",
+              "title": "Superconducting Platform Technologies",
+              "score": 16.3
+            }
+          ],
+          "hit_at_5": true,
+          "known_target_recall_at_5": 1.0,
+          "reciprocal_rank": 1.0
+        }
+      }
+    },
+    {
+      "id": "regenerative_grazing",
+      "language": "en",
+      "systems": {
+        "baseline": {
+          "target_ranks": [
+            1
+          ],
+          "returned": 82,
+          "pairs_passed": 1,
+          "pairs_total": 1,
+          "top_results": [
+            {
+              "id": "grant:14981COMPETITIVE_CALLen",
+              "title": "Co-creating solutions for soil health in Living Labs",
+              "score": 43.1
+            },
+            {
+              "id": "grant:52663407TOPICSen",
+              "title": "A stronger Global Ocean Observing System to enhance Europe’s strategic autonomy, climate resilience and biodiversity conservation",
+              "score": 11.5
+            },
+            {
+              "id": "grant:50129441TOPICSen",
+              "title": "Demonstration of solid biofuel supply and conversion to high efficiency CHP from fully sustainable regional value chains",
+              "score": 10.7
+            },
+            {
+              "id": "grant:50129721TOPICSen",
+              "title": "Improved system design for innovative PV applications (EUPI-PV Partnership)",
+              "score": 10.7
+            },
+            {
+              "id": "grant:52303958TOPICSen",
+              "title": "Regional Cable Hubs",
+              "score": 9.5
+            }
+          ],
+          "hit_at_5": true,
+          "known_target_recall_at_5": 1.0,
+          "reciprocal_rank": 1.0
+        },
+        "current": {
+          "target_ranks": [
+            1
+          ],
+          "returned": 3,
+          "pairs_passed": 1,
+          "pairs_total": 1,
+          "top_results": [
+            {
+              "id": "grant:14981COMPETITIVE_CALLen",
+              "title": "GroundWork Open Call",
+              "score": 76.9
+            },
+            {
+              "id": "grant:50129441TOPICSen",
+              "title": "Demonstration of solid biofuel supply and conversion to high efficiency CHP from fully sustainable regional value chains",
+              "score": 23.6
+            },
+            {
+              "id": "grant:50129721TOPICSen",
+              "title": "Improved system design for innovative PV applications (EUPI-PV Partnership)",
+              "score": 22.2
+            }
+          ],
+          "hit_at_5": true,
+          "known_target_recall_at_5": 1.0,
+          "reciprocal_rank": 1.0
+        }
+      }
+    },
+    {
+      "id": "food_waste",
+      "language": "en",
+      "systems": {
+        "baseline": {
+          "target_ranks": [
+            1
+          ],
+          "returned": 83,
+          "pairs_passed": 1,
+          "pairs_total": 1,
+          "top_results": [
+            {
+              "id": "grant:51424835TOPICSen",
+              "title": "EU support to Stakeholders to improve measurement of food waste and help implement food waste prevention in their operations and organisation - 2026-2027",
+              "score": 78.8
+            },
+            {
+              "id": "tender:32b3703c-e9ef-4dc4-9afa-79b9f0e741ed-CN",
+              "title": "Harmonising the implementation of EU legal requirements in the fields of Plant Health and Plant Protection Products through the 'Better Training for Safer Food' Initiative",
+              "score": 17.7
+            },
+            {
+              "id": "tender:4caff0ff-3640-4eb5-bcac-7a5589735f72-CN",
+              "title": "Technical assistance to upgrade food safety and animal health management in the Turkish Cypriot community",
+              "score": 17.7
+            },
+            {
+              "id": "tender:e2dd98f0-40e3-47a0-9358-c4fc36af4014-CN",
+              "title": "Harmonising the implementation of EU legal requirements in the fields of Food, Feed, Animal By-products and Food Processing Technologies through the 'Better Training for Safer Food' Initiative",
+              "score": 17.7
+            },
+            {
+              "id": "grant:50217435TOPICSen",
+              "title": "Development of innovative tools, processes, equipment and technologies through responses to disasters and emergencies for search and rescue in hazardous conditions",
+              "score": 16.6
+            }
+          ],
+          "hit_at_5": true,
+          "known_target_recall_at_5": 1.0,
+          "reciprocal_rank": 1.0
+        },
+        "current": {
+          "target_ranks": [
+            1
+          ],
+          "returned": 1,
+          "pairs_passed": 1,
+          "pairs_total": 1,
+          "top_results": [
+            {
+              "id": "grant:51424835TOPICSen",
+              "title": "EU support to Stakeholders to improve measurement of food waste and help implement food waste prevention in their operations and organisation - 2026-2027",
+              "score": 79.9
+            }
+          ],
+          "hit_at_5": true,
+          "known_target_recall_at_5": 1.0,
+          "reciprocal_rank": 1.0
+        }
+      }
+    },
+    {
+      "id": "agrivoltaics",
+      "language": "en",
+      "systems": {
+        "baseline": {
+          "target_ranks": [
+            1
+          ],
+          "returned": 72,
+          "pairs_passed": 1,
+          "pairs_total": 1,
+          "top_results": [
+            {
+              "id": "grant:50129721TOPICSen",
+              "title": "Improved system design for innovative PV applications (EUPI-PV Partnership)",
+              "score": 18.1
+            },
+            {
+              "id": "grant:52664986TOPICSen",
+              "title": "Detection, monitoring, modelling, and attribution capabilities for Solar Radiation Modification (SRM) activities and assessing their impacts on Earth's climate and ecosystems",
+              "score": 9.6
+            },
+            {
+              "id": "tender:bdc343c7-b4f7-46af-bbcd-fdeccae969b3-CN",
+              "title": "Caribbean Electricity Integrator Facility",
+              "score": 9.3
+            },
+            {
+              "id": "grant:51349575TOPICSen",
+              "title": "Advanced Materials for Miniaturised Energy Harvesting Systems",
+              "score": 7.9
+            },
+            {
+              "id": "grant:50217593TOPICSen",
+              "title": "Development of ecosystem and next-generation capabilities for a secured European Critical Communication System in civil security",
+              "score": 6.0
+            }
+          ],
+          "hit_at_5": true,
+          "known_target_recall_at_5": 1.0,
+          "reciprocal_rank": 1.0
+        },
+        "current": {
+          "target_ranks": [
+            1
+          ],
+          "returned": 1,
+          "pairs_passed": 1,
+          "pairs_total": 1,
+          "top_results": [
+            {
+              "id": "grant:50129721TOPICSen",
+              "title": "Improved system design for innovative PV applications (EUPI-PV Partnership)",
+              "score": 53.2
+            }
+          ],
+          "hit_at_5": true,
+          "known_target_recall_at_5": 1.0,
+          "reciprocal_rank": 1.0
+        }
+      }
+    },
+    {
+      "id": "pollinator_app",
+      "language": "en",
+      "systems": {
+        "baseline": {
+          "target_ranks": [
+            1
+          ],
+          "returned": 36,
+          "pairs_passed": 1,
+          "pairs_total": 1,
+          "top_results": [
+            {
+              "id": "tender:47909690-4647-44ff-8048-ad2d6ad24317-CN",
+              "title": "App-based recording of pollinators under the Nature Restoration Regulation",
+              "score": 34.4
+            },
+            {
+              "id": "tender:ca74904c-8716-451a-83be-2c1aaf5fa805-CN",
+              "title": "Framework service contract for the collection of meteorological and hydrological in-situ data in support to the Copernicus Emergency Management Service (CEMS) Flood Early Warning Systems",
+              "score": 11.0
+            },
+            {
+              "id": "tender:538149d7-ac8e-46f4-88ec-22b5318e2c90-CN",
+              "title": "Supply and maintenance of a desktop SEM-EDX scanning electron microscope in custom build glovebox for the JRC Geel.",
+              "score": 9.8
+            },
+            {
+              "id": "tender:68d2099d-aeb0-479d-af81-0baf26bcd8d2-CN",
+              "title": "Framework contract for the organisation of study visits and market access analysis in the Sanitary and Phytosanitary field (SPS)",
+              "score": 7.7
+            },
+            {
+              "id": "tender:b3425eaf-709c-4477-8e37-a33695fe5343-CN",
+              "title": "Procurement of data for the \"Tariffs\", \"Taxes\" and \"Procedures and Formalities\" section of Access2Markets for 2027-2030",
+              "score": 6.1
+            }
+          ],
+          "hit_at_5": true,
+          "known_target_recall_at_5": 1.0,
+          "reciprocal_rank": 1.0
+        },
+        "current": {
+          "target_ranks": [
+            1
+          ],
+          "returned": 1,
+          "pairs_passed": 1,
+          "pairs_total": 1,
+          "top_results": [
+            {
+              "id": "tender:47909690-4647-44ff-8048-ad2d6ad24317-CN",
+              "title": "App-based recording of pollinators under the Nature Restoration Regulation",
+              "score": 67.9
+            }
+          ],
+          "hit_at_5": true,
+          "known_target_recall_at_5": 1.0,
+          "reciprocal_rank": 1.0
+        }
+      }
+    },
+    {
+      "id": "office_cleaning",
+      "language": "en",
+      "systems": {
+        "baseline": {
+          "target_ranks": [
+            1,
+            2
+          ],
+          "returned": 34,
+          "pairs_passed": 2,
+          "pairs_total": 2,
+          "top_results": [
+            {
+              "id": "tender:488d877a-4b78-4014-8885-6b24c4bd01e9-CN",
+              "title": "Cleaning services for the EC Representation and Europe Experience in The Hague",
+              "score": 34.6
+            },
+            {
+              "id": "tender:0e8147d7-c618-4d5e-a576-4d896febd7b7-CN",
+              "title": "Cleaning services for the European Commission Representation and European Parliament Liaison Office (EPLO) in Helsinki",
+              "score": 29.1
+            },
+            {
+              "id": "tender:87f78ced-c170-4ba3-8757-60650f7be322-CN",
+              "title": "Support for the organisation of events and other communication and information activities of the European Parliament Liaison Office in Poland",
+              "score": 15.1
+            },
+            {
+              "id": "tender:c0444e5c-17b9-4b96-88bb-f42b50321a7e-CN",
+              "title": "Meeting room equipment, maintenance and support",
+              "score": 14.6
+            },
+            {
+              "id": "tender:fce11b2a-c0ce-4c24-bad5-f7794b3918c3-CN",
+              "title": "Professional Services Dynamic Purchasing System (PROSERV DPS)",
+              "score": 12.2
+            }
+          ],
+          "hit_at_5": true,
+          "known_target_recall_at_5": 1.0,
+          "reciprocal_rank": 1.0
+        },
+        "current": {
+          "target_ranks": [
+            1,
+            2
+          ],
+          "returned": 8,
+          "pairs_passed": 2,
+          "pairs_total": 2,
+          "top_results": [
+            {
+              "id": "tender:488d877a-4b78-4014-8885-6b24c4bd01e9-CN",
+              "title": "Cleaning services for the EC Representation and Europe Experience in The Hague",
+              "score": 89.8
+            },
+            {
+              "id": "tender:0e8147d7-c618-4d5e-a576-4d896febd7b7-CN",
+              "title": "Cleaning services for the European Commission Representation and European Parliament Liaison Office (EPLO) in Helsinki",
+              "score": 51.9
+            },
+            {
+              "id": "tender:7f34d1fb-d0da-4a45-8457-9b42fe70aea0-CN",
+              "title": "Provision of Relocation, Move Support, Warehousing and Distribution Services for the European Union Agency for Asylum (EUAA) premises in Malta Lot1: Relocation and Move Support Services Malta Lot2: Warehousing and Distribution Services Malt",
+              "score": 18.9
+            },
+            {
+              "id": "tender:87f78ced-c170-4ba3-8757-60650f7be322-CN",
+              "title": "Support for the organisation of events and other communication and information activities of the European Parliament Liaison Office in Poland",
+              "score": 16.4
+            },
+            {
+              "id": "tender:0fbe8bf0-8e46-4874-8714-9dc161406097-CN",
+              "title": "Framework contract for interior design and the delivery of furniture at the JRC Geel and Petten site.",
+              "score": 15.8
+            }
+          ],
+          "hit_at_5": true,
+          "known_target_recall_at_5": 1.0,
+          "reciprocal_rank": 1.0
+        }
+      }
+    },
+    {
+      "id": "software_maintenance",
+      "language": "en",
+      "systems": {
+        "baseline": {
+          "target_ranks": [
+            2,
+            14
+          ],
+          "returned": 41,
+          "pairs_passed": 1,
+          "pairs_total": 2,
+          "top_results": [
+            {
+              "id": "tender:2d7fbaee-6f9e-4d97-9c0a-0366116f8a84-CN",
+              "title": "Acquisition, Delivery, Installation and Hardware and Software Maintenance of Discoverer++ AI Supercomputer",
+              "score": 31.2
+            },
+            {
+              "id": "tender:fbbea1db-f251-41de-a4db-8c2c9e16b2ae-CN",
+              "title": "Dynamic Purchasing System (DPS) for Provision of Software Development, Project Management and Quality Assurance Services (PROMAQ DPS 1: Software development and maintenance services)",
+              "score": 31.2
+            },
+            {
+              "id": "tender:51e3ba95-4a41-400b-824a-fafcad66ba85-CN",
+              "title": "Supply and Maintenance of a GC-MS/MS-QQQ",
+              "score": 26.4
+            },
+            {
+              "id": "tender:3bbba72d-9117-4558-bdcd-fc8a0c76af18-CN",
+              "title": "Dynamic Purchasing System (DPS) for Provision of Software Development, Project Management and Quality Assurance Services (PROMAQ DPS 2: Project management, quality assurance and other support services)",
+              "score": 19.5
+            },
+            {
+              "id": "tender:ae9cb816-e5a7-4f21-8d6f-1bf50745d6a3-CN",
+              "title": "Maintenance and update of the content of OSHwiki articles",
+              "score": 17.5
+            }
+          ],
+          "hit_at_5": true,
+          "known_target_recall_at_5": 0.5,
+          "reciprocal_rank": 0.5
+        },
+        "current": {
+          "target_ranks": [
+            1,
+            2
+          ],
+          "returned": 19,
+          "pairs_passed": 2,
+          "pairs_total": 2,
+          "top_results": [
+            {
+              "id": "tender:fbbea1db-f251-41de-a4db-8c2c9e16b2ae-CN",
+              "title": "Dynamic Purchasing System (DPS) for Provision of Software Development, Project Management and Quality Assurance Services (PROMAQ DPS 1: Software development and maintenance services)",
+              "score": 67.7
+            },
+            {
+              "id": "tender:8a8d8225-ef94-4781-b70a-72acca9f4291-CN",
+              "title": "Dynamic Purchasing System (DPS) for IT SERVICES RELATED TO APPLICATION DEVELOPMENT AND MAINTENANCE",
+              "score": 67.2
+            },
+            {
+              "id": "tender:2d7fbaee-6f9e-4d97-9c0a-0366116f8a84-CN",
+              "title": "Acquisition, Delivery, Installation and Hardware and Software Maintenance of Discoverer++ AI Supercomputer",
+              "score": 65.5
+            },
+            {
+              "id": "tender:d307cb87-9c3a-4f71-82ce-21441f98284b-CN",
+              "title": "Provision of ICT services: Project Management Support, Plone Maintenance and Microsoft Maintenance and Developments",
+              "score": 45.7
+            },
+            {
+              "id": "tender:51e3ba95-4a41-400b-824a-fafcad66ba85-CN",
+              "title": "Supply and Maintenance of a GC-MS/MS-QQQ",
+              "score": 43.9
+            }
+          ],
+          "hit_at_5": true,
+          "known_target_recall_at_5": 1.0,
+          "reciprocal_rank": 1.0
+        }
+      }
+    },
+    {
+      "id": "cloud_infrastructure",
+      "language": "en",
+      "systems": {
+        "baseline": {
+          "target_ranks": [
+            1
+          ],
+          "returned": 76,
+          "pairs_passed": 1,
+          "pairs_total": 1,
+          "top_results": [
+            {
+              "id": "tender:f34767af-9787-4707-b689-a676c221a837-CN",
+              "title": "Dynamic Purchasing System for Cloud Services (CLOUD III DPS)",
+              "score": 29.1
+            },
+            {
+              "id": "tender:022a474b-19c5-41bb-a86b-fd644676334c-CN",
+              "title": "Pilot Project on Multi-layered Airborne Capabilities for Situational Awareness - HAPS Services for Border Surveillance",
+              "score": 15.2
+            },
+            {
+              "id": "tender:de510eb9-2fac-49ab-a9a7-94e8087a6922-CN",
+              "title": "Provision of ICT services for user support, infrastructure administration and maintenance services",
+              "score": 12.3
+            },
+            {
+              "id": "tender:cff88f5b-ada8-4d2a-be6f-6e525c56f00f-CN",
+              "title": "TECHNICAL SECRETARIAT FOR THE FIRE INFORMATION EXCHANGE PLATFORM (FIEP)",
+              "score": 10.1
+            },
+            {
+              "id": "tender:81c7a4f4-289c-42c3-b163-de441da51ea8-CN",
+              "title": "EU Complementary Time (C-T) and Complementary Position and Navigation (C-PN) services",
+              "score": 9.4
+            }
+          ],
+          "hit_at_5": true,
+          "known_target_recall_at_5": 1.0,
+          "reciprocal_rank": 1.0
+        },
+        "current": {
+          "target_ranks": [
+            1
+          ],
+          "returned": 1,
+          "pairs_passed": 1,
+          "pairs_total": 1,
+          "top_results": [
+            {
+              "id": "tender:f34767af-9787-4707-b689-a676c221a837-CN",
+              "title": "Dynamic Purchasing System for Cloud Services (CLOUD III DPS)",
+              "score": 82.5
+            }
+          ],
+          "hit_at_5": true,
+          "known_target_recall_at_5": 1.0,
+          "reciprocal_rank": 1.0
+        }
+      }
+    },
+    {
+      "id": "cultural_heritage_xr",
+      "language": "en",
+      "systems": {
+        "baseline": {
+          "target_ranks": [
+            16
+          ],
+          "returned": 73,
+          "pairs_passed": 0,
+          "pairs_total": 1,
+          "top_results": [
+            {
+              "id": "grant:50218038TOPICSen",
+              "title": "Understanding inhabitant’s experiences of neighbourhoods to support their health and well-being",
+              "score": 34.8
+            },
+            {
+              "id": "grant:52519580TOPICSen",
+              "title": "European video games and immersive content",
+              "score": 20.5
+            },
+            {
+              "id": "grant:15523COMPETITIVE_CALLen",
+              "title": "Fostering Ukrainians’ access to culture and cultural heritage",
+              "score": 18.3
+            },
+            {
+              "id": "tender:42364bab-9dd6-4a99-be90-9761687c07da-CN",
+              "title": "Supplies to protect heritage and agriculture in the Turkish Cypriot community",
+              "score": 15.1
+            },
+            {
+              "id": "grant:52519120TOPICSen",
+              "title": "European slate development",
+              "score": 12.0
+            }
+          ],
+          "hit_at_5": false,
+          "known_target_recall_at_5": 0.0,
+          "reciprocal_rank": 0.0625
+        },
+        "current": {
+          "target_ranks": [
+            1
+          ],
+          "returned": 6,
+          "pairs_passed": 1,
+          "pairs_total": 1,
+          "top_results": [
+            {
+              "id": "grant:15142COMPETITIVE_CALLen",
+              "title": "HERIFORGE 2nd Open Call",
+              "score": 42.8
+            },
+            {
+              "id": "grant:50218038TOPICSen",
+              "title": "Understanding inhabitant’s experiences of neighbourhoods to support their health and well-being",
+              "score": 29.3
+            },
+            {
+              "id": "grant:52519580TOPICSen",
+              "title": "European video games and immersive content",
+              "score": 27.3
+            },
+            {
+              "id": "grant:15501COMPETITIVE_CALLen",
+              "title": "FORTIS Open Call #2: Pushing towards the deployment of FORTIS and Exploiting the FORTIS solution in other key sectors",
+              "score": 19.7
+            },
+            {
+              "id": "grant:52664946TOPICSen",
+              "title": "Bringing innovative climate preparedness and resilience solutions closer to the market",
+              "score": 17.8
+            }
+          ],
+          "hit_at_5": true,
+          "known_target_recall_at_5": 1.0,
+          "reciprocal_rank": 1.0
+        }
+      }
+    },
+    {
+      "id": "water_management",
+      "language": "en",
+      "systems": {
+        "baseline": {
+          "target_ranks": [
+            1
+          ],
+          "returned": 135,
+          "pairs_passed": 1,
+          "pairs_total": 1,
+          "top_results": [
+            {
+              "id": "grant:15581COMPETITIVE_CALLen",
+              "title": "European Partnership Water Security for the Planet (Water4All)",
+              "score": 58.6
+            },
+            {
+              "id": "grant:50217411TOPICSen",
+              "title": "Multi-hazard approach and cumulative / cascading impacts",
+              "score": 32.8
+            },
+            {
+              "id": "grant:50129441TOPICSen",
+              "title": "Demonstration of solid biofuel supply and conversion to high efficiency CHP from fully sustainable regional value chains",
+              "score": 29.5
+            },
+            {
+              "id": "grant:50217990TOPICSen",
+              "title": "Innovative approaches for the spatial design of neighbourhoods",
+              "score": 29.5
+            },
+            {
+              "id": "grant:50218200TOPICSen",
+              "title": "Understanding capital market dynamics for increased investment in New European Bauhaus projects in neighbourhoods",
+              "score": 29.5
+            }
+          ],
+          "hit_at_5": true,
+          "known_target_recall_at_5": 1.0,
+          "reciprocal_rank": 1.0
+        },
+        "current": {
+          "target_ranks": [
+            1
+          ],
+          "returned": 1,
+          "pairs_passed": 1,
+          "pairs_total": 1,
+          "top_results": [
+            {
+              "id": "grant:15581COMPETITIVE_CALLen",
+              "title": "Water4All 2026 Joint Transnational Call “Sustainable water management”",
+              "score": 94.1
+            }
+          ],
+          "hit_at_5": true,
+          "known_target_recall_at_5": 1.0,
+          "reciprocal_rank": 1.0
+        }
+      }
+    },
+    {
+      "id": "ai_compute",
+      "language": "en",
+      "systems": {
+        "baseline": {
+          "target_ranks": [
+            1
+          ],
+          "returned": 46,
+          "pairs_passed": 1,
+          "pairs_total": 1,
+          "top_results": [
+            {
+              "id": "tender:bc712395-692d-41ab-aa25-8e254ae86eb2-CN",
+              "title": "Call for Tenders for the selection of Artificial Intelligence Gigafactory Consortia and the establishment of AI Gigafactories",
+              "score": 45.2
+            },
+            {
+              "id": "tender:ec71b6aa-06b8-46cd-ac06-a5b0488ff1fa-CN",
+              "title": "Topic Centre on Chemicals, Environment and Health",
+              "score": 10.1
+            },
+            {
+              "id": "tender:757ab711-4ddf-4c73-94bb-af886276ca5d-CN",
+              "title": "EEA/DTL/TC/26/001 - Topic Centre on support to the implementation of the Copernicus Land Monitoring Service and In situ coordination",
+              "score": 10.0
+            },
+            {
+              "id": "tender:76030a9f-3b4b-42b1-a8a2-aee0485120e9-CN",
+              "title": "FRANET - F-SE-26-T01 Provision of services related to data collection and research services on fundamental rights issues",
+              "score": 9.8
+            },
+            {
+              "id": "tender:179e270d-84c4-4ca7-9f4b-63e830debce0-CN",
+              "title": "Preparation and implementation of the pilot survey on company use and productivity impact of AI - 250001/7820",
+              "score": 9.7
+            }
+          ],
+          "hit_at_5": true,
+          "known_target_recall_at_5": 1.0,
+          "reciprocal_rank": 1.0
+        },
+        "current": {
+          "target_ranks": [
+            1
+          ],
+          "returned": 2,
+          "pairs_passed": 1,
+          "pairs_total": 1,
+          "top_results": [
+            {
+              "id": "tender:bc712395-692d-41ab-aa25-8e254ae86eb2-CN",
+              "title": "Call for Tenders for the selection of Artificial Intelligence Gigafactory Consortia and the establishment of AI Gigafactories",
+              "score": 81.1
+            },
+            {
+              "id": "tender:4fa98f13-d151-45d0-8d7f-afe6219dbdaf-CN",
+              "title": "TEN-D study - Investments in Trans European Digital Networks Study on topology, needs, market failure and investment gaps of backbone projects of strategic European Interest",
+              "score": 29.8
+            }
+          ],
+          "hit_at_5": true,
+          "known_target_recall_at_5": 1.0,
+          "reciprocal_rank": 1.0
+        }
+      }
+    },
+    {
+      "id": "recycled_paper",
+      "language": "en",
+      "systems": {
+        "baseline": {
+          "target_ranks": [
+            1
+          ],
+          "returned": 19,
+          "pairs_passed": 1,
+          "pairs_total": 1,
+          "top_results": [
+            {
+              "id": "tender:893d8d50-29ea-4299-ab57-097376f1f983-CN",
+              "title": "Supply and distribution of recycled paper in DIN A4 format",
+              "score": 58.6
+            },
+            {
+              "id": "tender:4150b190-4672-44f8-b316-f25d922e4bf2-CN",
+              "title": "BSGEE2026-010 Printing",
+              "score": 23.1
+            },
+            {
+              "id": "tender:0e8147d7-c618-4d5e-a576-4d896febd7b7-CN",
+              "title": "Cleaning services for the European Commission Representation and European Parliament Liaison Office (EPLO) in Helsinki",
+              "score": 15.5
+            },
+            {
+              "id": "tender:87f78ced-c170-4ba3-8757-60650f7be322-CN",
+              "title": "Support for the organisation of events and other communication and information activities of the European Parliament Liaison Office in Poland",
+              "score": 15.5
+            },
+            {
+              "id": "tender:52c10cd0-1183-4208-82f8-80769e1f6d88-CN",
+              "title": "Supply of an innert glovebox chain for the JRC Karlsruhe",
+              "score": 12.4
+            }
+          ],
+          "hit_at_5": true,
+          "known_target_recall_at_5": 1.0,
+          "reciprocal_rank": 1.0
+        },
+        "current": {
+          "target_ranks": [
+            1
+          ],
+          "returned": 2,
+          "pairs_passed": 1,
+          "pairs_total": 1,
+          "top_results": [
+            {
+              "id": "tender:893d8d50-29ea-4299-ab57-097376f1f983-CN",
+              "title": "Supply and distribution of recycled paper in DIN A4 format",
+              "score": 35.1
+            },
+            {
+              "id": "tender:4150b190-4672-44f8-b316-f25d922e4bf2-CN",
+              "title": "BSGEE2026-010 Printing",
+              "score": 30.3
+            }
+          ],
+          "hit_at_5": true,
+          "known_target_recall_at_5": 1.0,
+          "reciprocal_rank": 1.0
+        }
+      }
+    },
+    {
+      "id": "battery_scope",
+      "language": "en",
+      "systems": {
+        "baseline": {
+          "target_ranks": [],
+          "returned": 125,
+          "pairs_passed": 0,
+          "pairs_total": 0,
+          "top_results": [
+            {
+              "id": "grant:50129993TOPICSen",
+              "title": "Data sharing to support the training and development of AI foundation models in the energy sector",
+              "score": 16.5
+            },
+            {
+              "id": "grant:51121982TOPICSen",
+              "title": "Key enabling technologies for fusion power plants (European Partnership on Fusion Energy)",
+              "score": 14.5
+            },
+            {
+              "id": "grant:51349575TOPICSen",
+              "title": "Advanced Materials for Miniaturised Energy Harvesting Systems",
+              "score": 13.6
+            },
+            {
+              "id": "grant:50129654TOPICSen",
+              "title": "Resource assessment for deep sedimentary and basement reservoirs",
+              "score": 11.1
+            },
+            {
+              "id": "grant:50129721TOPICSen",
+              "title": "Improved system design for innovative PV applications (EUPI-PV Partnership)",
+              "score": 11.1
+            }
+          ],
+          "forbidden_results_absent": false
+        },
+        "current": {
+          "target_ranks": [],
+          "returned": 0,
+          "pairs_passed": 0,
+          "pairs_total": 0,
+          "top_results": [],
+          "forbidden_results_absent": true,
+          "no_strong_passed": true
+        }
+      }
+    },
+    {
+      "id": "generic_query",
+      "language": "en",
+      "systems": {
+        "baseline": {
+          "target_ranks": [],
+          "returned": 68,
+          "pairs_passed": 0,
+          "pairs_total": 0,
+          "top_results": [
+            {
+              "id": "tender:ff049c5f-7507-4216-8e8d-55acab592f01-CN",
+              "title": "Strengthening digital connectivity and the digital transformation of businesses and public services in Albania",
+              "score": 100.0
+            },
+            {
+              "id": "grant:186824PROSPECTSEN",
+              "title": "Strengthening the Palestinian Monetary Authority and its role to support the stability, transparency, accountability and the digital transition of the financial sector in Palestine",
+              "score": 100.0
+            },
+            {
+              "id": "tender:0b2464f8-2d96-4e26-b1f4-5001cf101d3b-CN",
+              "title": "Digital Communications Services",
+              "score": 100.0
+            },
+            {
+              "id": "grant:15123COMPETITIVE_CALLen",
+              "title": "Boosting Digital Skills of young pupils, in particular girls",
+              "score": 100.0
+            },
+            {
+              "id": "grant:51665634TOPICSen",
+              "title": "AI compute evaluation and deployment platform for EU infrastructure",
+              "score": 100.0
+            }
+          ],
+          "empty_query_passed": false
+        },
+        "current": {
+          "target_ranks": [],
+          "returned": 0,
+          "pairs_passed": 0,
+          "pairs_total": 0,
+          "top_results": [],
+          "empty_query_passed": true
+        }
+      }
+    },
+    {
+      "id": "absent_topic",
+      "language": "en",
+      "systems": {
+        "baseline": {
+          "target_ranks": [],
+          "returned": 0,
+          "pairs_passed": 0,
+          "pairs_total": 0,
+          "top_results": [],
+          "empty_query_passed": true
+        },
+        "current": {
+          "target_ranks": [],
+          "returned": 0,
+          "pairs_passed": 0,
+          "pairs_total": 0,
+          "top_results": [],
+          "empty_query_passed": true
+        }
+      }
+    },
+    {
+      "id": "cleaning_italian",
+      "language": "it",
+      "systems": {
+        "baseline": {
+          "target_ranks": [
+            null,
+            null
+          ],
+          "returned": 0,
+          "pairs_passed": 0,
+          "pairs_total": 0,
+          "top_results": [],
+          "hit_at_5": false,
+          "known_target_recall_at_5": 0.0,
+          "reciprocal_rank": 0
+        },
+        "current": {
+          "target_ranks": [
+            2,
+            1
+          ],
+          "returned": 3,
+          "pairs_passed": 0,
+          "pairs_total": 0,
+          "top_results": [
+            {
+              "id": "tender:0e8147d7-c618-4d5e-a576-4d896febd7b7-CN",
+              "title": "Cleaning services for the European Commission Representation and European Parliament Liaison Office (EPLO) in Helsinki",
+              "score": 47.5
+            },
+            {
+              "id": "tender:488d877a-4b78-4014-8885-6b24c4bd01e9-CN",
+              "title": "Cleaning services for the EC Representation and Europe Experience in The Hague",
+              "score": 47.1
+            },
+            {
+              "id": "tender:87f78ced-c170-4ba3-8757-60650f7be322-CN",
+              "title": "Support for the organisation of events and other communication and information activities of the European Parliament Liaison Office in Poland",
+              "score": 15.2
+            }
+          ],
+          "hit_at_5": true,
+          "known_target_recall_at_5": 1.0,
+          "reciprocal_rank": 1.0
+        }
+      }
+    },
+    {
+      "id": "heritage_italian",
+      "language": "it",
+      "systems": {
+        "baseline": {
+          "target_ranks": [
+            null
+          ],
+          "returned": 0,
+          "pairs_passed": 0,
+          "pairs_total": 0,
+          "top_results": [],
+          "hit_at_5": false,
+          "known_target_recall_at_5": 0.0,
+          "reciprocal_rank": 0
+        },
+        "current": {
+          "target_ranks": [
+            1
+          ],
+          "returned": 5,
+          "pairs_passed": 0,
+          "pairs_total": 0,
+          "top_results": [
+            {
+              "id": "grant:15142COMPETITIVE_CALLen",
+              "title": "HERIFORGE 2nd Open Call",
+              "score": 41.4
+            },
+            {
+              "id": "grant:52519580TOPICSen",
+              "title": "European video games and immersive content",
+              "score": 20.9
+            },
+            {
+              "id": "grant:15501COMPETITIVE_CALLen",
+              "title": "FORTIS Open Call #2: Pushing towards the deployment of FORTIS and Exploiting the FORTIS solution in other key sectors",
+              "score": 19.1
+            },
+            {
+              "id": "tender:42364bab-9dd6-4a99-be90-9761687c07da-CN",
+              "title": "Supplies to protect heritage and agriculture in the Turkish Cypriot community",
+              "score": 17.0
+            },
+            {
+              "id": "grant:50218038TOPICSen",
+              "title": "Understanding inhabitant’s experiences of neighbourhoods to support their health and well-being",
+              "score": 16.8
+            }
+          ],
+          "hit_at_5": true,
+          "known_target_recall_at_5": 1.0,
+          "reciprocal_rank": 1.0
+        }
+      }
+    }
+  ]
+}

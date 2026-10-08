@@ -7,7 +7,8 @@ import json
 from pathlib import Path
 from shutil import copyfile
 
-from .core import STOPWORDS, live, load
+from .core import live, load
+from .matching import CONFIG
 
 
 WEB_DIR = Path(__file__).resolve().parent.parent / "web"
@@ -36,7 +37,7 @@ def build_site(data_path: Path, output_dir: Path) -> dict[str, object]:
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "last_collected": max((row.get("last_seen", "") for row in records.values()), default=""),
         "stored": len(records),
-        "stopwords": sorted(STOPWORDS),
+        "matching_config": CONFIG,
         "records": [{key: row.get(key) for key in PUBLIC_FIELDS} for row in active],
     }
     (output_dir / "opportunities.json").write_text(

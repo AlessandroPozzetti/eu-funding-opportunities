@@ -8,7 +8,7 @@ import json
 from pathlib import Path
 from urllib.parse import urlsplit
 
-from .core import live, load, rank
+from .core import assess, live, load
 
 
 WEB_DIR = Path(__file__).resolve().parent.parent / "web"
@@ -80,8 +80,8 @@ def create_handler(data_path: Path):
                     raise ValueError("Provide up to 25 short keywords")
                 if kind not in {None, "grant", "tender"}:
                     raise ValueError("Unknown opportunity type")
-                results = rank(load(data_path), description, keywords, limit=20, kind=kind)
-                self.send_json({"results": results, "count": len(results), "as_of": datetime.now(timezone.utc).isoformat()})
+                assessment = assess(load(data_path), description, keywords, limit=20, kind=kind)
+                self.send_json({**assessment, "as_of": datetime.now(timezone.utc).isoformat()})
             except (ValueError, json.JSONDecodeError) as exc:
                 self.send_json({"error": str(exc)}, status=400)
 

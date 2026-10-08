@@ -66,6 +66,11 @@ textarea::placeholder, input::placeholder { color: #8b99aa; }
 .result-details a { font-weight: 700; text-decoration: none; }
 .result-details a:hover { text-decoration: underline; }
 .match-terms { color: var(--muted); font-size: .76rem; margin-top: 11px; }
+.search-notes { background: #f3f6fb; border-radius: 9px; padding: 14px 16px; margin-bottom: 16px; font-size: .8rem; line-height: 1.6; color: var(--muted); }
+.search-notes p { margin: 0 0 7px; }
+.search-notes p:last-child { margin-bottom: 0; }
+.result-card .match-level { color: var(--blue); font-weight: 650; margin-bottom: 10px; }
+.result-card .missing-topics, .result-card .eligibility-note { font-size: .76rem; margin-top: 10px; }
 .site-footer { border-top: 1px solid var(--line); color: var(--muted); font-size: .76rem; display: flex; justify-content: space-between; gap: 20px; padding: 20px 0 35px; }
 .site-footer p { margin: 0; }
 @media (max-width: 850px) { .hero { grid-template-columns: 1fr; gap: 30px; padding: 50px 0; } .hero-stats { max-width: 360px; } .workspace { grid-template-columns: 1fr; } .site-footer { flex-direction: column; } }

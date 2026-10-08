@@ -32,9 +32,8 @@ async function getStatus() {
 async function getMatches(payload) {
   if (staticMode) {
     const snapshot = await loadStaticData();
-    const results = window.OpportunityMatcher.rankOpportunities(
-      snapshot.records, payload.description, payload.keywords, payload.kind, snapshot.stopwords);
-    return { results, count: results.length };
+    return window.OpportunityMatcher.assessOpportunities(
+      snapshot.records, payload.description, payload.keywords, payload.kind, snapshot.matching_config);
   }
   const response = await fetch("/api/match", {
     method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload),
@@ -77,9 +76,10 @@ function renderResult(result) {
   const score = document.createElement("div");
   score.className = "score";
   const scoreNumber = document.createElement("strong");
-  scoreNumber.textContent = `${result.score}%`;
+  scoreNumber.textContent = `${result.score}/100`;
   const scoreLabel = document.createElement("span");
-  scoreLabel.textContent = "text match";
+  scoreLabel.textContent = "relevance index";
+  score.title = "An uncalibrated index of text evidence. Compare results within this search; this is not a probability or an eligibility decision.";
   score.append(scoreNumber, scoreLabel);
   top.append(meta, score);
 
@@ -89,7 +89,18 @@ function renderResult(result) {
   description.textContent = result.description || "See the official source for details.";
   const terms = document.createElement("div");
   terms.className = "match-terms";
-  terms.textContent = `Matched terms: ${result.matched_terms.join(", ")}`;
+  terms.textContent = `Supported topics: ${result.evidence.map((item) => `${item.topic} (${item.fields.join(", ")})`).join("; ")}`;
+  const level = document.createElement("p");
+  level.className = "match-level";
+  level.textContent = result.match_level;
+  const missing = document.createElement("p");
+  missing.className = "missing-topics";
+  missing.textContent = result.missing_topics.length
+    ? `Not found in available text: ${result.missing_topics.join(", ")}.`
+    : "Your search topics appear in the available text. Confirm the full scope in the official documents.";
+  const eligibility = document.createElement("p");
+  eligibility.className = "eligibility-note";
+  eligibility.textContent = "Eligibility not assessed: check country, organisation type, consortium and eligible activities.";
   const details = document.createElement("div");
   details.className = "result-details";
   const deadline = document.createElement("span");
@@ -103,7 +114,7 @@ function renderResult(result) {
     link.textContent = "Official opportunity ↗";
     details.append(link);
   }
-  card.append(top, title, description, terms, details);
+  card.append(top, title, level, description, terms, missing, eligibility, details);
   return card;
 }
 
@@ -132,6 +143,7 @@ $("match-form").addEventListener("submit", async (event) => {
   const results = $("results");
   button.disabled = true;
   button.textContent = "Finding opportunities…";
+  $("search-notes").hidden = true;
   $("results-subtitle").textContent = "Comparing your text with open opportunities…";
   results.replaceChildren(emptyState("Searching", "This may take a moment for a large dataset."));
   try {
@@ -141,9 +153,22 @@ $("match-form").addEventListener("submit", async (event) => {
       kind: $("kind").value,
     };
     const data = await getMatches(payload);
-    $("results-subtitle").textContent = `${data.count} relevant open ${data.count === 1 ? "opportunity" : "opportunities"} found. Sorted by text match.`;
+    $("results-subtitle").textContent = `Showing ${data.count} of ${data.total} open opportunities with text evidence. Sorted by relevance index.`;
+    const notes = $("search-notes");
+    notes.replaceChildren();
+    for (const text of [...data.notices, data.score_note]) {
+      const paragraph = document.createElement("p");
+      paragraph.textContent = text;
+      notes.append(paragraph);
+    }
+    if (data.query.priority_topics.length) {
+      const paragraph = document.createElement("p");
+      paragraph.textContent = `Priority topics: ${data.query.priority_topics.join(", ")}.`;
+      notes.append(paragraph);
+    }
+    notes.hidden = false;
     if (!data.count) {
-      results.replaceChildren(emptyState("No matches yet", "Try broader terms, add English keywords, or choose both grants and tenders."));
+      results.replaceChildren(emptyState("No sufficient match found", "Add specific English terms or adjust your priority keywords. The current collection may not contain a suitable open opportunity."));
     } else {
       results.replaceChildren(...data.results.map(renderResult));
     }

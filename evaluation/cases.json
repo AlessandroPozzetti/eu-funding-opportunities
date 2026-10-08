@@ -1,0 +1,302 @@
+{
+  "label_provenance": "Author-assessed pilot judgments from the frozen source texts, not independently reviewed by funding experts. Targets are non-exhaustive and measure topical retrieval, not eligibility.",
+  "cases": [
+    {
+      "id": "cybersecurity_smes",
+      "language": "en",
+      "description": "We develop AI-powered cybersecurity products to help small businesses detect attacks and respond to incidents.",
+      "keywords": [
+        "cybersecurity",
+        "SME",
+        "AI"
+      ],
+      "kind": "",
+      "expected": [
+        "grant:52303917TOPICSen"
+      ],
+      "avoid": [
+        "grant:52303934TOPICSen"
+      ],
+      "rationale": "The target explicitly funds development and deployment of AI cybersecurity products for SMEs; NCC network coordination has a different primary activity."
+    },
+    {
+      "id": "wood_construction",
+      "language": "en",
+      "description": "We test circular construction products made from residual wood and timber.",
+      "keywords": [
+        "wood",
+        "construction"
+      ],
+      "kind": "",
+      "expected": [
+        "grant:13903COMPETITIVE_CALLen"
+      ],
+      "avoid": [
+        "grant:51121982TOPICSen"
+      ],
+      "rationale": "WoodStock explicitly supports demonstration and testing of wood construction solutions; fusion power is outside the project subject."
+    },
+    {
+      "id": "regenerative_grazing",
+      "language": "en",
+      "description": "We are farmers implementing regenerative grazing and monitoring soil health with sensors.",
+      "keywords": [
+        "regenerative grazing",
+        "soil"
+      ],
+      "kind": "",
+      "expected": [
+        "grant:14981COMPETITIVE_CALLen"
+      ],
+      "avoid": [
+        "grant:50129721TOPICSen"
+      ],
+      "rationale": "GroundWork supports regenerative livestock grazing and soil monitoring. Agrivoltaics concerns solar electricity and agriculture instead."
+    },
+    {
+      "id": "food_waste",
+      "language": "en",
+      "description": "We measure food waste and implement food waste prevention in our operations.",
+      "keywords": [
+        "food waste"
+      ],
+      "kind": "",
+      "expected": [
+        "grant:51424835TOPICSen"
+      ],
+      "avoid": [
+        "tender:e2dd98f0-40e3-47a0-9358-c4fc36af4014-CN"
+      ],
+      "rationale": "The grant explicitly covers waste measurement and prevention; food safety training is a different activity."
+    },
+    {
+      "id": "agrivoltaics",
+      "language": "en",
+      "description": "We demonstrate photovoltaic panels on farmland that combine crop production and solar electricity generation.",
+      "keywords": [
+        "agrivoltaics",
+        "photovoltaics"
+      ],
+      "kind": "",
+      "expected": [
+        "grant:50129721TOPICSen"
+      ],
+      "avoid": [
+        "grant:52664986TOPICSen"
+      ],
+      "rationale": "The PV topic explicitly includes agrivoltaics. Solar radiation modification is climate intervention rather than photovoltaic power generation."
+    },
+    {
+      "id": "pollinator_app",
+      "language": "en",
+      "description": "We build an app for surveyors to record pollinators and collect field monitoring data.",
+      "keywords": [
+        "pollinator",
+        "app"
+      ],
+      "kind": "tender",
+      "expected": [
+        "tender:47909690-4647-44ff-8048-ad2d6ad24317-CN"
+      ],
+      "avoid": [
+        "tender:8a8d8225-ef94-4781-b70a-72acca9f4291-CN"
+      ],
+      "rationale": "The procurement explicitly seeks a pollinator field-data app; generic software procurement does not specify this use case."
+    },
+    {
+      "id": "office_cleaning",
+      "language": "en",
+      "description": "We provide professional cleaning for offices and meeting rooms.",
+      "keywords": [
+        "cleaning",
+        "office"
+      ],
+      "kind": "tender",
+      "expected": [
+        "tender:488d877a-4b78-4014-8885-6b24c4bd01e9-CN",
+        "tender:0e8147d7-c618-4d5e-a576-4d896febd7b7-CN"
+      ],
+      "avoid": [
+        "tender:fbbea1db-f251-41de-a4db-8c2c9e16b2ae-CN"
+      ],
+      "rationale": "Both identified contracts seek office cleaning; eligibility and service locations remain unchecked."
+    },
+    {
+      "id": "software_maintenance",
+      "language": "en",
+      "description": "We develop software applications and provide ongoing maintenance.",
+      "keywords": [
+        "software",
+        "maintenance"
+      ],
+      "kind": "tender",
+      "expected": [
+        "tender:fbbea1db-f251-41de-a4db-8c2c9e16b2ae-CN",
+        "tender:8a8d8225-ef94-4781-b70a-72acca9f4291-CN"
+      ],
+      "avoid": [
+        "tender:3bbba72d-9117-4558-bdcd-fc8a0c76af18-CN"
+      ],
+      "rationale": "Software development and maintenance lots are closer than the project-management/quality-assurance lot."
+    },
+    {
+      "id": "cloud_infrastructure",
+      "language": "en",
+      "description": "We provide multi-tenant cloud infrastructure and platform services using IaaS and PaaS.",
+      "keywords": [
+        "cloud",
+        "IaaS",
+        "PaaS"
+      ],
+      "kind": "tender",
+      "expected": [
+        "tender:f34767af-9787-4707-b689-a676c221a837-CN"
+      ],
+      "avoid": [
+        "tender:2450a6e6-e2e3-4b94-a81c-fb1db28fe9e1-CN"
+      ],
+      "rationale": "The Cloud DPS explicitly procures multi-tenant IaaS/PaaS; an AI observatory study has a different deliverable."
+    },
+    {
+      "id": "cultural_heritage_xr",
+      "language": "en",
+      "description": "We develop extended reality experiences for cultural heritage sites and museums.",
+      "keywords": [
+        "cultural heritage",
+        "extended reality"
+      ],
+      "kind": "",
+      "expected": [
+        "grant:15142COMPETITIVE_CALLen"
+      ],
+      "avoid": [
+        "grant:15523COMPETITIVE_CALLen"
+      ],
+      "rationale": "HERIFORGE explicitly combines XR and cultural heritage; cultural participation support for Ukrainians is a different primary activity."
+    },
+    {
+      "id": "water_management",
+      "language": "en",
+      "description": "We conduct research on sustainable water management.",
+      "keywords": [
+        "water management"
+      ],
+      "kind": "",
+      "expected": [
+        "grant:15581COMPETITIVE_CALLen"
+      ],
+      "avoid": [
+        "grant:51121982TOPICSen"
+      ],
+      "rationale": "Water4All names sustainable water management. The available description is too short to establish detailed eligibility or scope."
+    },
+    {
+      "id": "ai_compute",
+      "language": "en",
+      "description": "We operate a supercomputing data centre and provide artificial intelligence compute capacity.",
+      "keywords": [
+        "artificial intelligence",
+        "supercomputing",
+        "data centre"
+      ],
+      "kind": "tender",
+      "expected": [
+        "tender:bc712395-692d-41ab-aa25-8e254ae86eb2-CN"
+      ],
+      "avoid": [
+        "tender:2450a6e6-e2e3-4b94-a81c-fb1db28fe9e1-CN"
+      ],
+      "rationale": "AI Gigafactories procure compute capacity; the AI Observatory studies AI developments rather than operating compute facilities."
+    },
+    {
+      "id": "recycled_paper",
+      "language": "en",
+      "description": "We supply recycled paper for office printing.",
+      "keywords": [
+        "recycled paper",
+        "printing"
+      ],
+      "kind": "tender",
+      "expected": [
+        "tender:893d8d50-29ea-4299-ab57-097376f1f983-CN"
+      ],
+      "avoid": [
+        "grant:51196315TOPICSen"
+      ],
+      "rationale": "The paper tender directly requests recycled A4 paper; electronic defence components are outside scope."
+    },
+    {
+      "id": "battery_scope",
+      "language": "en",
+      "description": "We develop recyclable batteries and energy storage systems for local power grids.",
+      "keywords": [
+        "battery",
+        "recycling",
+        "energy storage"
+      ],
+      "kind": "",
+      "expected": [],
+      "avoid": [
+        "grant:51121982TOPICSen",
+        "tender:893d8d50-29ea-4299-ab57-097376f1f983-CN"
+      ],
+      "rationale": "Fusion power must not be suggested solely because of generic energy terms. No complete positive judgement is available for this battery-recycling project. A paper-supply tender must also not qualify through the single shared recycling concept.",
+      "no_strong": true
+    },
+    {
+      "id": "generic_query",
+      "language": "en",
+      "description": "digital",
+      "keywords": [],
+      "kind": "",
+      "expected": [],
+      "avoid": [],
+      "rationale": "A generic adjective does not specify a project; request more information instead of displaying 100% matches.",
+      "expect_empty": true
+    },
+    {
+      "id": "absent_topic",
+      "language": "en",
+      "description": "We manufacture harpsichords for baroque music.",
+      "keywords": [
+        "harpsichord"
+      ],
+      "kind": "",
+      "expected": [],
+      "avoid": [],
+      "rationale": "No harpsichord evidence exists in this frozen corpus. Generic manufacturing overlap is insufficient.",
+      "expect_empty": true
+    },
+    {
+      "id": "cleaning_italian",
+      "language": "it",
+      "description": "Offriamo pulizie professionali per uffici.",
+      "keywords": [
+        "pulizie",
+        "uffici"
+      ],
+      "kind": "tender",
+      "expected": [
+        "tender:488d877a-4b78-4014-8885-6b24c4bd01e9-CN",
+        "tender:0e8147d7-c618-4d5e-a576-4d896febd7b7-CN"
+      ],
+      "avoid": [],
+      "rationale": "Supplementary check of the documented Italian aliases for cleaning and office."
+    },
+    {
+      "id": "heritage_italian",
+      "language": "it",
+      "description": "Sviluppiamo esperienze per musei e patrimonio culturale.",
+      "keywords": [
+        "patrimonio culturale",
+        "XR"
+      ],
+      "kind": "",
+      "expected": [
+        "grant:15142COMPETITIVE_CALLen"
+      ],
+      "avoid": [],
+      "rationale": "Supplementary alias check for cultural heritage and XR; no claim of general Italian language understanding."
+    }
+  ]
+}

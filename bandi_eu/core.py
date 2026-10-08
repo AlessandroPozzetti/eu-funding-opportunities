@@ -5,13 +5,11 @@ from __future__ import annotations
 import html
 from html.parser import HTMLParser
 import json
-import math
 import os
 from pathlib import Path
 import re
 import time
 from datetime import datetime, time as dt_time, timezone
-from collections import Counter
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
@@ -21,7 +19,6 @@ from zoneinfo import ZoneInfo
 
 API_URL = "https://api.tech.ec.europa.eu/search-api/prod/rest/search"
 STATUS = {"31094501": "forthcoming", "31094502": "open", "31094503": "closed"}
-STOPWORDS = set("a an and are as at be by for from in is it of on or the to with this that we our you your una uno un di da del della delle dei gli il la le lo i e o per con su nel nella che si sono questo questi tra come ai agli alle all allo al the".split())
 
 
 class _Text(HTMLParser):
@@ -315,49 +312,14 @@ def audit(records: dict[str, dict]) -> dict:
     }
 
 
-def tokens(value: str) -> Counter:
-    return Counter(word for word in re.findall(r"[^\W_]+", value.casefold(), flags=re.UNICODE) if len(word) > 2 and word not in STOPWORDS)
+def assess(records: dict[str, dict], description: str, keywords: list[str], limit: int = 20,
+           kind: str | None = None, now: datetime | None = None) -> dict:
+    from .matching import assess as assess_open_records
+    now = now or datetime.now(timezone.utc)
+    candidates = [row for row in records.values() if live(row, now)]
+    return assess_open_records(candidates, description, keywords, limit, kind)
 
 
-def rank(records: dict[str, dict], description: str, keywords: list[str], limit: int = 10, kind: str | None = None) -> list[dict]:
-    query = tokens(description + " " + " ".join(keywords))
-    if not query:
-        raise ValueError("Provide a description or at least one keyword")
-    now = datetime.now(timezone.utc)
-    candidates = [row for row in records.values() if live(row, now) and (kind is None or row.get("kind") == kind)]
-    if not candidates:
-        return []
-    documents = []
-    frequency = Counter()
-    for row in candidates:
-        title_terms = tokens(row["title"] + " " + row.get("call_title", ""))
-        keyword_terms = tokens(" ".join(row.get("keywords", []) + row.get("tags", [])))
-        description_terms = tokens(row.get("description", ""))
-        documents.append((row, title_terms, keyword_terms, description_terms))
-        frequency.update(set(title_terms) | set(keyword_terms) | set(description_terms))
-    scored = []
-    for row, title_terms, keyword_terms, description_terms in documents:
-        matches = []
-        numerator = denominator = 0.0
-        for word in query:
-            weight = math.log(1 + (len(documents) + 1) / (frequency[word] + 1))
-            denominator += weight
-            strength = min(1.0, (0.85 if word in title_terms else 0) + (0.55 if word in keyword_terms else 0) + (0.3 if word in description_terms else 0))
-            if strength:
-                numerator += weight * strength
-                matches.append(word)
-        if not matches:
-            continue
-        score = round(100 * numerator / denominator, 1)
-        scored.append({
-            "score": score,
-            "matched_terms": sorted(matches),
-            "kind": row["kind"],
-            "identifier": row["identifier"],
-            "title": row["title"],
-            "description": row.get("description", "")[:360],
-            "deadline": row["deadline"],
-            "url": row["url"],
-            "programme_code": row["programme_code"],
-        })
-    return sorted(scored, key=lambda item: (-item["score"], item["deadline"]))[:limit]
+def rank(records: dict[str, dict], description: str, keywords: list[str], limit: int = 10,
+         kind: str | None = None) -> list[dict]:
+    return assess(records, description, keywords, limit, kind)["results"]

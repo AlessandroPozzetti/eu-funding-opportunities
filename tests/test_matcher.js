@@ -2,6 +2,7 @@
 
 const assert = require("node:assert/strict");
 const { isOpenOpportunity, rankOpportunities } = require("../web/matcher.js");
+const config = require("../bandi_eu/matching_config.json");
 
 const future = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
 const past = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
@@ -21,9 +22,14 @@ const expired = { ...base, identifier: "C", deadline: past };
 assert.equal(isOpenOpportunity(titleMatch), true);
 assert.equal(isOpenOpportunity(expired), false);
 const results = rankOpportunities(
-  [titleMatch, descriptionMatch, expired], "battery recycling", [], "grant", ["and"]);
+  [titleMatch, descriptionMatch, expired], "battery recycling", [], "grant", config);
 assert.equal(results.length, 2);
 assert.equal(results[0].identifier, "A");
 assert.ok(results[0].score > results[1].score);
-assert.deepEqual(rankOpportunities([titleMatch], "battery", [], "tender", []), []);
+assert.deepEqual(rankOpportunities([titleMatch], "battery", [], "tender", config), []);
+assert.deepEqual(rankOpportunities([titleMatch], "digital", [], "", config), []);
+assert.equal(isOpenOpportunity({ ...base, deadline: "2026-10-08" }, Date.parse("2026-10-08T22:30:00Z")), false);
+assert.equal(isOpenOpportunity({ ...base, deadline: "2026-01-08" }, Date.parse("2026-01-08T22:30:00Z")), true);
+assert.equal(isOpenOpportunity({ ...base, deadline: "2026-99-99" }), false);
+assert.equal(isOpenOpportunity({ ...base, deadline: "2026-02-30" }), false);
 console.log("Static portal matcher: OK");
