@@ -1,10 +1,10 @@
-name: Nightly EU funding collection
+name: EU opportunity collection
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: '0 21 * * *'
       timezone: Europe/Rome
-  workflow_dispatch:
 
 permissions:
   contents: write
@@ -18,8 +18,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.12'
       - name: Run tests

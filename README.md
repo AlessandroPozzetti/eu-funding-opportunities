@@ -1,57 +1,64 @@
-# EU Funding Opportunities
+# EU Opportunity Finder
 
-This starter project collects opportunities from the European Commission's [Funding & Tenders Portal API](https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/support/apis) every evening and compares currently open opportunities with a short project description.
+A small, testable project that collects grants and procurement notices from the European Commission's [Funding & Tenders Portal API](https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/support/apis) and matches open opportunities to a project description.
 
-## Data collected
+## Project structure
 
-The first version imports funding opportunities marked *Open* or *Forthcoming* by the public SEDIA API. It reads every result page and stores the official identifier, title, programme, dates, description, conditions, keywords, budget, source URL, and original metadata. Records are stored in `data/opportunities.jsonl`, one JSON object per line. Opportunities that disappear from the current list remain in the history with `listed: false`.
+| Path | Purpose |
+| --- | --- |
+| `bandi_eu/core.py` | API client, normalization, collection, storage, and lexical matching |
+| `bandi_eu/web.py` | Local HTTP server and JSON endpoints |
+| `web/` | Responsive portal interface |
+| `data/opportunities.jsonl` | Collected records, one JSON object per line |
+| `tests/` | Collector and portal tests |
+| `.github/workflows/nightly-sync.yml` | Nightly and manual GitHub Actions collection |
+| `scripts/publish_first_collection.sh` | One-time publisher for the first collection and portal |
 
-Matching only suggests opportunities marked *Open* with a future deadline. If a deadline is missing or cannot be parsed, the record remains in the dataset but is not suggested automatically. The portal's status can be out of date, so the deadline is checked separately.
+## First collection
 
-Add `--include-tenders` to collect procurement notices from the same portal. This does **not** cover all European public procurement notices published by [TED](https://ted.europa.eu/). The funding query uses API categories `type=1,2,8` from the Commission's examples; the tender query uses `type=0`. The first full run must confirm the coverage of these categories.
-
-## Run locally
-
-Requires Python 3.11 or newer. No third-party packages or private API keys are needed.
+Python 3.10 or newer is required. There are no third-party packages or private API keys.
 
 ```bash
+cd /Users/ale/personal/bandi_europei
 python3 -m unittest discover -s tests -v
 python3 -m bandi_eu sync
+python3 -m bandi_eu audit
+```
+
+`sync` collects **both grants and tenders** by default. It requests every page for active and forthcoming opportunities. It validates the reported total before replacing the dataset, so an incomplete API response does not overwrite the previous collection. It prints separate grant and tender counts at the end.
+
+`audit` reports how many collected records are currently open, how many belong to each type, and how many are missing a deadline, source title, description, or source URL. Review this summary after each collection and spot-check several official links. See [data/README.md](data/README.md) for the first collection report and source data caveats.
+
+The collector stores the official identifier, source reference, type, title, programme, opening and deadline dates, description, conditions, keywords, budget, source URL, and original metadata. Records removed from the current API result remain in the history with `listed: false`.
+
+The funding query uses API categories `type=1,2,8` from the Commission's examples; the tender query uses `type=0`. The first collection should be reviewed against the portal to confirm category coverage. Procurement notices from this portal do **not** cover every notice in [TED](https://ted.europa.eu/).
+
+## Explore the portal locally
+
+After the first collection, start the portal:
+
+```bash
+python3 -m bandi_eu serve
+```
+
+Open **http://127.0.0.1:8000**. Enter a short project description, comma-separated keywords, and optionally choose grants or tenders. The portal shows only opportunities marked open with a future deadline. Its 0–100 score measures English text overlap and shows the matching terms; it is **not** an award probability or an eligibility decision. Confirm all deadlines and requirements on the official opportunity page.
+
+The command-line matcher remains available:
+
+```bash
 python3 -m bandi_eu match "We develop sustainable batteries for the power grid" --keywords battery recycling energy
 ```
 
-To include procurement notices:
+## Collection workflow
 
-```bash
-python3 -m bandi_eu sync --include-tenders
-```
+To publish the first collection from a Terminal authenticated with GitHub CLI, run `bash scripts/publish_first_collection.sh`. It stages the project files, creates a commit, pushes `main`, and requests a fresh workflow run. It is safe to run again if the commit already exists; it still requests a fresh run.
 
-Matching returns a **lexical relevance score from 0 to 100**, matching words, a deadline, and a source link. The score measures text overlap. It is not an estimate of award probability and does not check eligibility, geography, or applicant type. English keywords work best because the imported records are in English.
+The GitHub Actions workflow runs every day at **21:00 Europe/Rome** and also supports manual runs from the Actions tab. The timezone setting follows daylight saving time. GitHub [documents that scheduled runs can be delayed or dropped](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows); a dedicated scheduler is needed for a guaranteed start at an exact minute.
 
-## Publish the repository
+The workflow requests `contents: write` to commit the updated JSONL. If it cannot push, check *Settings → Actions → General → Workflow permissions* in the repository. The dataset grows with each run; if it becomes too large for Git, move persistence to a managed database.
 
-Sign in to the GitHub CLI with `gh auth login -h github.com`, then run these commands from this project directory:
+## Matching limitations and next steps
 
-```bash
-git init -b main
-git add .
-git commit -m "Start EU funding collection"
-gh repo create eu-funding-opportunities --private --source=. --remote=origin --push
-```
-
-The repository is private by default in this example. If the scheduled workflow cannot commit updates, check *Settings → Actions → General → Workflow permissions* and allow the `GITHUB_TOKEN` to write repository contents. The workflow requests `contents: write` only for the data update.
-
-## Nightly update
-
-The workflow in `.github/workflows/nightly-sync.yml` is provisionally scheduled for **21:00 Europe/Rome**, including daylight saving time changes. It can also be started manually from the *Actions* tab. After a complete collection, it commits the JSONL file. If the API fails or pagination is incomplete, the existing file remains intact and the workflow fails.
-
-[GitHub notes that scheduled runs may be delayed or dropped](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows). A dedicated scheduler with monitoring is required if execution at an exact minute must be guaranteed. GitHub can also disable schedules in a public repository after 60 days without activity.
-
-## Next steps for the portal
-
-1. Expose the records to a web application with filters for programme, deadline, and opportunity type.
-2. Ask users for a project description, keywords, and essential eligibility details such as organisation type, country, size, and partners.
-3. Improve multilingual matching with semantic search, explainable results, and a separate check of official eligibility requirements.
-4. As the dataset and user base grow, move persistence from Git to a managed database and monitor each update.
-
-The official call documents and conditions remain the authoritative source before submitting an application.
+- English descriptions and keywords currently work best because the imported records are requested in English.
+- The score does not verify organisation type, country, consortium rules, budget fit, or other eligibility conditions.
+- A later version can add multilingual semantic matching, explainable eligibility filters, user profiles, and a hosted portal backed by a database.

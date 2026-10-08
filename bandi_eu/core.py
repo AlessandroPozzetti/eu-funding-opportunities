@@ -20,9 +20,7 @@ from zoneinfo import ZoneInfo
 
 
 API_URL = "https://api.tech.ec.europa.eu/search-api/prod/rest/search"
-SOURCE_URL = "https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/support/apis"
 STATUS = {"31094501": "forthcoming", "31094502": "open", "31094503": "closed"}
-ROME = ZoneInfo("Europe/Rome")
 STOPWORDS = set("a an and are as at be by for from in is it of on or the to with this that we our you your una uno un di da del della delle dei gli il la le lo i e o per con su nel nella che si sono questo questi tra come ai agli alle all allo al the".split())
 
 
@@ -70,7 +68,8 @@ def parse_date(value: str) -> datetime | None:
     if not value:
         return None
     try:
-        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        normalized = re.sub(r"([+-]\d{2})(\d{2})$", r"\1:\2", value.replace("Z", "+00:00"))
+        parsed = datetime.fromisoformat(normalized)
         if parsed.tzinfo is None:
             # Date-only deadlines remain valid through the end of the Brussels day.
             if len(value) == 10:
@@ -96,8 +95,9 @@ def normalize(hit: dict, kind: str) -> dict:
         raise ValueError("Invalid API metadata")
     identifier = first(metadata, "identifier", "topicAbbreviation")
     title = first(metadata, "title")
-    if not identifier or not title:
-        raise ValueError("Opportunity is missing an identifier or title")
+    if not identifier:
+        raise ValueError("Opportunity is missing an identifier")
+    reference = str(hit.get("reference") or "").strip()
     raw_url = first(metadata, "url") or hit.get("url") or ""
     if not raw_url and kind == "grant":
         from urllib.parse import quote
@@ -105,11 +105,12 @@ def normalize(hit: dict, kind: str) -> dict:
         raw_url = "https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/opportunities/topic-details/" + quote(identifier, safe="")
     status_code = first(metadata, "status")
     record = {
-        "id": f"{kind}:{identifier}",
+        "id": f"{kind}:{reference or identifier}",
         "kind": kind,
         "api_type": first(metadata, "type"),
         "identifier": identifier,
-        "title": clean_text(title),
+        "title": clean_text(title) if title else f"Untitled {kind} ({identifier})",
+        "source_title_present": bool(title),
         "call_identifier": first(metadata, "callIdentifier"),
         "call_title": clean_text(first(metadata, "callTitle")),
         "programme_code": first(metadata, "frameworkProgramme"),
@@ -119,7 +120,7 @@ def normalize(hit: dict, kind: str) -> dict:
         "opening_date": first(metadata, "startDate"),
         "deadline": first(metadata, "deadlineDate"),
         "deadline_model": first(metadata, "deadlineModel"),
-        "description": clean_text(first(metadata, "descriptionByte", "description")),
+        "description": clean_text(first(metadata, "descriptionByte", "description") or hit.get("summary")),
         "conditions": clean_text(first(metadata, "topicConditions")),
         "destination": clean_text(first(metadata, "destinationDescription")),
         "keywords": values(metadata, "keywords"),
@@ -128,7 +129,8 @@ def normalize(hit: dict, kind: str) -> dict:
         "budget": first(metadata, "budget", "budgetOverview"),
         "currency": first(metadata, "currency"),
         "url": raw_url,
-        "source_reference": str(hit.get("reference") or ""),
+        "source_reference": reference,
+        "source_updated_at": first(metadata, "esDA_IngestDate"),
         "source": "EU Funding & Tenders Portal",
         "raw_metadata": metadata,
     }
@@ -183,6 +185,7 @@ def fetch_page(kind: str, page: int, page_size: int = 100, retries: int = 3) -> 
 
 def fetch_all(kind: str, page_size: int = 100) -> dict[str, dict]:
     found: dict[str, dict] = {}
+    received = 0
     page = 1
     expected: int | None = None
     while True:
@@ -195,18 +198,36 @@ def fetch_all(kind: str, page_size: int = 100) -> dict[str, dict]:
                 raise RuntimeError(f"The API returned no {kind} records; collection stopped")
         if total != expected:
             raise RuntimeError(f"API total changed during pagination ({expected} → {total})")
-        if not results and len(found) < total:
-            raise RuntimeError(f"Incomplete pagination: {len(found)} of {total} records")
+        if not results and received < total:
+            raise RuntimeError(f"Incomplete pagination: {received} of {total} source rows")
+        received += len(results)
         for hit in results:
             record = normalize(hit, kind)
-            found[record["id"]] = record
-        print(f"{kind}: page {page}, {len(found)}/{total}", flush=True)
-        if page * page_size >= total:
+            current = found.get(record["id"])
+            if current is None or _record_quality(record) > _record_quality(current):
+                found[record["id"]] = record
+        print(f"{kind}: page {page}, {received}/{total} source rows, {len(found)} unique opportunities", flush=True)
+        if received >= total:
             break
         page += 1
-    if len(found) != expected:
-        raise RuntimeError(f"Incomplete or duplicated pagination: {len(found)} unique records of {expected}")
+    if received != expected:
+        raise RuntimeError(f"Pagination returned {received} source rows; expected {expected}")
+    print(f"{kind}: complete; {len(found)} unique opportunities, {received - len(found)} duplicate source rows", flush=True)
     return found
+
+
+def _record_quality(record: dict) -> tuple:
+    metadata = record["raw_metadata"]
+    language = first(metadata, "language", "displayLanguage", "lang").lower()
+    return (
+        parse_date(record["source_updated_at"]) or datetime.min.replace(tzinfo=timezone.utc),
+        record["source_title_present"],
+        language in {"en", "eng", "english"},
+        len(record["description"]),
+        len(record["conditions"]),
+        bool(record["url"]),
+        record["source_reference"],
+    )
 
 
 def load(path: Path) -> dict[str, dict]:
@@ -235,7 +256,7 @@ def save(path: Path, records: dict[str, dict]) -> None:
         temporary.unlink(missing_ok=True)
 
 
-def sync(path: Path, include_tenders: bool = False) -> dict[str, int]:
+def sync(path: Path, include_tenders: bool = True) -> dict[str, int]:
     kinds = ["grant", "tender"] if include_tenders else ["grant"]
     snapshots = {kind: fetch_all(kind) for kind in kinds}
     records = load(path)
@@ -267,44 +288,76 @@ def sync(path: Path, include_tenders: bool = False) -> dict[str, int]:
                 old["last_changed"] = timestamp
                 removed += 1
     save(path, records)
-    return {"new": new, "changed": changed, "removed_from_current_list": removed, "total_stored": len(records)}
+    return {"new": new, "changed": changed, "removed_from_current_list": removed, "total_stored": len(records), "grants_fetched": len(snapshots["grant"]), "tenders_fetched": len(snapshots.get("tender", {}))}
+
+
+def audit(records: dict[str, dict]) -> dict:
+    listed = [row for row in records.values() if row.get("listed", True)]
+    active = [row for row in listed if live(row)]
+    now = datetime.now(timezone.utc)
+    return {
+        "stored": len(records),
+        "listed": len(listed),
+        "listed_grants": sum(row.get("kind") == "grant" for row in listed),
+        "listed_tenders": sum(row.get("kind") == "tender" for row in listed),
+        "open_with_future_deadline": len(active),
+        "open_grants": sum(row.get("kind") == "grant" for row in active),
+        "open_tenders": sum(row.get("kind") == "tender" for row in active),
+        "open_with_past_deadline": sum(
+            row.get("status") == "open" and (deadline := parse_date(row.get("deadline", ""))) is not None and deadline < now
+            for row in listed
+        ),
+        "missing_deadline": sum(not row.get("deadline") for row in listed),
+        "missing_source_title": sum(not row.get("source_title_present", True) for row in listed),
+        "missing_source_url": sum(not row.get("url") for row in listed),
+        "missing_description": sum(not row.get("description") for row in listed),
+        "last_collected": max((row.get("last_seen", "") for row in listed), default=""),
+    }
 
 
 def tokens(value: str) -> Counter:
     return Counter(word for word in re.findall(r"[^\W_]+", value.casefold(), flags=re.UNICODE) if len(word) > 2 and word not in STOPWORDS)
 
 
-def rank(records: dict[str, dict], description: str, keywords: list[str], limit: int = 10) -> list[dict]:
+def rank(records: dict[str, dict], description: str, keywords: list[str], limit: int = 10, kind: str | None = None) -> list[dict]:
     query = tokens(description + " " + " ".join(keywords))
     if not query:
         raise ValueError("Provide a description or at least one keyword")
     now = datetime.now(timezone.utc)
-    candidates = [row for row in records.values() if live(row, now)]
+    candidates = [row for row in records.values() if live(row, now) and (kind is None or row.get("kind") == kind)]
     if not candidates:
         return []
     documents = []
     frequency = Counter()
     for row in candidates:
-        weighted = Counter()
-        for term, count in tokens(row["title"] + " " + row.get("call_title", "")).items():
-            weighted[term] += 3 * count
-        weighted.update(tokens(row.get("description", "")))
-        for term, count in tokens(" ".join(row.get("keywords", []) + row.get("tags", []))).items():
-            weighted[term] += 2 * count
-        documents.append((row, weighted))
-        frequency.update(weighted.keys())
+        title_terms = tokens(row["title"] + " " + row.get("call_title", ""))
+        keyword_terms = tokens(" ".join(row.get("keywords", []) + row.get("tags", [])))
+        description_terms = tokens(row.get("description", ""))
+        documents.append((row, title_terms, keyword_terms, description_terms))
+        frequency.update(set(title_terms) | set(keyword_terms) | set(description_terms))
     scored = []
-    for row, document in documents:
+    for row, title_terms, keyword_terms, description_terms in documents:
         matches = []
         numerator = denominator = 0.0
-        for word, count in query.items():
+        for word in query:
             weight = math.log(1 + (len(documents) + 1) / (frequency[word] + 1))
-            denominator += weight * count
-            if word in document:
-                numerator += weight * min(count, document[word])
+            denominator += weight
+            strength = min(1.0, (0.85 if word in title_terms else 0) + (0.55 if word in keyword_terms else 0) + (0.3 if word in description_terms else 0))
+            if strength:
+                numerator += weight * strength
                 matches.append(word)
         if not matches:
             continue
         score = round(100 * numerator / denominator, 1)
-        scored.append({"score": score, "matched_terms": sorted(matches), "identifier": row["identifier"], "title": row["title"], "deadline": row["deadline"], "url": row["url"], "programme_code": row["programme_code"]})
+        scored.append({
+            "score": score,
+            "matched_terms": sorted(matches),
+            "kind": row["kind"],
+            "identifier": row["identifier"],
+            "title": row["title"],
+            "description": row.get("description", "")[:360],
+            "deadline": row["deadline"],
+            "url": row["url"],
+            "programme_code": row["programme_code"],
+        })
     return sorted(scored, key=lambda item: (-item["score"], item["deadline"]))[:limit]

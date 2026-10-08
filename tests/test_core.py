@@ -5,12 +5,12 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from unittest.mock import patch
 
-from bandi_eu.core import fetch_all, live, multipart, normalize, rank, sync
+from bandi_eu.core import audit, fetch_all, live, multipart, normalize, parse_date, rank, sync
 
 
 def hit(identifier="EU-2026-01", title="Clean energy storage", deadline=None):
     deadline = deadline or (datetime.now(timezone.utc) + timedelta(days=10)).isoformat()
-    return {"reference": "ref-1", "metadata": {
+    return {"reference": f"ref-{identifier}", "metadata": {
         "identifier": [identifier], "title": [title], "status": ["31094502"],
         "deadlineDate": [deadline], "descriptionByte": ["<p>Battery <b>recycling</b> research</p>"],
         "keywords": ["battery", "energy"], "frameworkProgramme": ["43108390"],
@@ -34,12 +34,59 @@ class CoreTests(unittest.TestCase):
         self.assertFalse(live({**record, "deadline": past, "listed": True}))
         self.assertFalse(live({**record, "listed": False}))
 
+    def test_parse_date_accepts_eu_api_timezone(self):
+        self.assertEqual(parse_date("2026-11-25T00:00:00.000+0000"), datetime(2026, 11, 25, tzinfo=timezone.utc))
+
+    def test_normalize_preserves_untitled_source_record(self):
+        source = hit("TENDER-01", "")
+        source["metadata"]["title"] = []
+        record = normalize(source, "tender")
+        self.assertEqual(record["title"], "Untitled tender (TENDER-01)")
+        self.assertFalse(record["source_title_present"])
+        self.assertEqual(audit({record["id"]: record})["missing_source_title"], 1)
+
     def test_pagination_rejects_missing_rows(self):
         first = {"totalResults": 2, "results": [hit()]}
         second = {"totalResults": 2, "results": []}
         with patch("bandi_eu.core.fetch_page", side_effect=[first, second]):
             with self.assertRaises(RuntimeError):
                 fetch_all("grant", page_size=1)
+
+    def test_pagination_accepts_duplicate_source_rows(self):
+        original = hit()
+        richer = hit()
+        richer["metadata"]["descriptionByte"] = ["<p>Battery recycling research with extra detail</p>"]
+        with patch("bandi_eu.core.fetch_page", side_effect=[
+            {"totalResults": 2, "results": [original]},
+            {"totalResults": 2, "results": [richer]},
+        ]):
+            records = fetch_all("grant", page_size=1)
+        self.assertEqual(len(records), 1)
+        self.assertIn("extra detail", records["grant:ref-EU-2026-01"]["description"])
+
+    def test_pagination_preserves_distinct_source_references(self):
+        original = hit()
+        second = hit()
+        second["reference"] = "ref-2"
+        with patch("bandi_eu.core.fetch_page", side_effect=[
+            {"totalResults": 2, "results": [original]},
+            {"totalResults": 2, "results": [second]},
+        ]):
+            records = fetch_all("grant", page_size=1)
+        self.assertEqual(set(records), {"grant:ref-EU-2026-01", "grant:ref-2"})
+
+    def test_pagination_selects_latest_version_of_same_reference(self):
+        older = hit()
+        older["metadata"]["esDA_IngestDate"] = ["2025-01-01T12:00:00.000+0000"]
+        newer = hit()
+        newer["metadata"]["esDA_IngestDate"] = ["2026-01-01T12:00:00.000+0000"]
+        newer["metadata"]["descriptionByte"] = ["Short updated notice"]
+        with patch("bandi_eu.core.fetch_page", side_effect=[
+            {"totalResults": 2, "results": [older]},
+            {"totalResults": 2, "results": [newer]},
+        ]):
+            records = fetch_all("grant", page_size=1)
+        self.assertEqual(records["grant:ref-EU-2026-01"]["description"], "Short updated notice")
 
     def test_sync_is_atomic_on_api_failure(self):
         with tempfile.TemporaryDirectory() as folder:
@@ -48,7 +95,7 @@ class CoreTests(unittest.TestCase):
             before = path.read_bytes()
             with patch("bandi_eu.core.fetch_all", side_effect=RuntimeError("API down")):
                 with self.assertRaises(RuntimeError):
-                    sync(path)
+                    sync(path, include_tenders=False)
             self.assertEqual(path.read_bytes(), before)
 
     def test_sync_keeps_history_and_records_source_changes(self):
@@ -56,18 +103,39 @@ class CoreTests(unittest.TestCase):
             path = Path(folder) / "data.jsonl"
             source = normalize(hit(), "grant")
             with patch("bandi_eu.core.fetch_all", return_value={source["id"]: source}):
-                first_run = sync(path)
+                first_run = sync(path, include_tenders=False)
             self.assertEqual(first_run["new"], 1)
             with patch("bandi_eu.core.fetch_all", return_value={source["id"]: source}):
-                second_run = sync(path)
+                second_run = sync(path, include_tenders=False)
             self.assertEqual(second_run["changed"], 0)
             modified = {**source, "title": "Updated clean energy storage"}
             with patch("bandi_eu.core.fetch_all", return_value={source["id"]: modified}):
-                third_run = sync(path)
+                third_run = sync(path, include_tenders=False)
             self.assertEqual(third_run["changed"], 1)
             stored = json.loads(path.read_text().splitlines()[0])
             self.assertEqual(stored["title"], "Updated clean energy storage")
             self.assertTrue(stored["listed"])
+
+    def test_sync_collects_grants_and_tenders_by_default(self):
+        with tempfile.TemporaryDirectory() as folder:
+            path = Path(folder) / "data.jsonl"
+            grant = normalize(hit(), "grant")
+            tender = normalize(hit("EU-TENDER-01", "Software services"), "tender")
+            with patch("bandi_eu.core.fetch_all", side_effect=[{grant["id"]: grant}, {tender["id"]: tender}]) as fetch:
+                result = sync(path)
+            self.assertEqual(fetch.call_args_list[0].args, ("grant",))
+            self.assertEqual(fetch.call_args_list[1].args, ("tender",))
+            self.assertEqual(result["grants_fetched"], 1)
+            self.assertEqual(result["tenders_fetched"], 1)
+            self.assertEqual(result["total_stored"], 2)
+
+    def test_audit_distinguishes_expired_portal_status(self):
+        grant = normalize(hit(), "grant")
+        grant["listed"] = True
+        expired = {**grant, "id": "grant:expired", "deadline": (datetime.now(timezone.utc) - timedelta(days=2)).isoformat()}
+        report = audit({grant["id"]: grant, expired["id"]: expired})
+        self.assertEqual(report["open_with_future_deadline"], 1)
+        self.assertEqual(report["open_with_past_deadline"], 1)
 
     def test_rank_uses_only_open_opportunities(self):
         record = normalize(hit(), "grant")
@@ -77,6 +145,14 @@ class CoreTests(unittest.TestCase):
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0]["identifier"], "EU-2026-01")
         self.assertGreater(results[0]["score"], 0)
+
+    def test_rank_prefers_title_match(self):
+        title_match = normalize(hit("EU-TITLE", "Battery recycling"), "grant")
+        description_match = normalize(hit("EU-DESC", "Other research"), "grant")
+        title_match["listed"] = True
+        description_match["listed"] = True
+        result = rank({title_match["id"]: title_match, description_match["id"]: description_match}, "battery recycling", [])
+        self.assertEqual(result[0]["identifier"], "EU-TITLE")
 
 
 if __name__ == "__main__":
