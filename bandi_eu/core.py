@@ -19,6 +19,16 @@ from zoneinfo import ZoneInfo
 
 API_URL = "https://api.tech.ec.europa.eu/search-api/prod/rest/search"
 STATUS = {"31094501": "forthcoming", "31094502": "open", "31094503": "closed"}
+SOURCE_SORT = [
+    {"field": "identifier", "order": "ASC"},
+    {"field": "DATASOURCE", "order": "ASC"},
+    {"field": "esDA_IngestDate", "order": "ASC"},
+]
+MAX_SCAN_ATTEMPTS = 4
+
+
+class IncompleteCollection(RuntimeError):
+    """A response cannot establish a complete, consistent source snapshot."""
 
 
 class _Text(HTMLParser):
@@ -147,12 +157,17 @@ def multipart(payload: dict) -> tuple[bytes, str]:
     return b"".join(parts), f"multipart/form-data; boundary={boundary}"
 
 
-def fetch_page(kind: str, page: int, page_size: int = 100, retries: int = 3) -> dict:
+def fetch_page(kind: str, page: int, page_size: int = 100, retries: int = 3, *, ordered: bool = True) -> dict:
+    if kind not in {"grant", "tender"} or page < 1 or not 1 <= page_size <= 100:
+        raise ValueError("Use grant/tender, a positive page number and a page size of 1–100")
     clauses = [
         {"terms": {"type": ["1", "2", "8"] if kind == "grant" else ["0"]}},
         {"terms": {"status": ["31094501", "31094502"]}},
     ]
-    body, content_type = multipart({"query": {"bool": {"must": clauses}}, "languages": ["en"]})
+    payload = {"query": {"bool": {"must": clauses}}, "languages": ["en"]}
+    if ordered:
+        payload["sort"] = SOURCE_SORT
+    body, content_type = multipart(payload)
     query = urlencode({"apiKey": "SEDIA", "text": "***", "pageSize": page_size, "pageNumber": page})
     request = Request(
         f"{API_URL}?{query}",
@@ -170,7 +185,7 @@ def fetch_page(kind: str, page: int, page_size: int = 100, retries: int = 3) -> 
         try:
             with urlopen(request, timeout=45) as response:
                 data = json.load(response)
-            if not isinstance(data, dict) or not isinstance(data.get("results"), list) or not isinstance(data.get("totalResults"), int):
+            if not isinstance(data, dict) or not isinstance(data.get("results"), list) or type(data.get("totalResults")) is not int:
                 raise ValueError("Unexpected API response: missing results or total")
             return data
         except (HTTPError, URLError, TimeoutError, ValueError) as exc:
@@ -180,50 +195,106 @@ def fetch_page(kind: str, page: int, page_size: int = 100, retries: int = 3) -> 
     raise AssertionError("Retry limit reached")
 
 
-def fetch_all(kind: str, page_size: int = 100) -> dict[str, dict]:
-    found: dict[str, dict] = {}
-    received = 0
+def _checked_page(kind: str, page: int, page_size: int, *, ordered: bool = True) -> tuple[list, int]:
+    data = fetch_page(kind, page, page_size, ordered=ordered)
+    if not isinstance(data, dict):
+        raise IncompleteCollection("Invalid API response")
+    results, total = data.get("results"), data.get("totalResults")
+    if not isinstance(results, list) or type(total) is not int or total < 0:
+        raise IncompleteCollection("Invalid API results or total")
+    if (type(data.get("pageNumber")) is not int or type(data.get("pageSize")) is not int
+            or data["pageNumber"] != page or data["pageSize"] != page_size):
+        raise IncompleteCollection(f"API did not honour page {page} / page size {page_size}")
+    if data.get("warnings"):
+        raise IncompleteCollection(f"API returned warnings on {kind} page {page}")
+    if len(results) != min(page_size, max(0, total - (page - 1) * page_size)):
+        raise IncompleteCollection(f"{kind} page {page}: row count does not match the source total")
+    return results, total
+
+
+def _collect_once(kind: str, page_size: int) -> dict[tuple[str, str, str], dict]:
+    """Read one complete pass; overlapping pages are failures, never deduplication."""
+    # Sorting on a sparsely populated metadata field can silently exclude records.
+    # Measure coverage independently, with the original unsorted query.
+    _, expected = _checked_page(kind, 1, 1, ordered=False)
+    if expected == 0:
+        raise IncompleteCollection(f"The API returned no {kind} records; collection stopped")
+    found: dict[tuple[str, str, str], dict] = {}
     page = 1
-    expected: int | None = None
     while True:
-        data = fetch_page(kind, page, page_size)
-        results = data["results"]
-        total = data["totalResults"]
-        if expected is None:
-            expected = total
-            if expected == 0:
-                raise RuntimeError(f"The API returned no {kind} records; collection stopped")
+        results, total = _checked_page(kind, page, page_size)
         if total != expected:
-            raise RuntimeError(f"API total changed during pagination ({expected} → {total})")
-        if not results and received < total:
-            raise RuntimeError(f"Incomplete pagination: {received} of {total} source rows")
-        received += len(results)
+            raise IncompleteCollection(f"API total changed or sorting excluded records ({expected} → {total})")
         for hit in results:
-            record = normalize(hit, kind)
-            current = found.get(record["id"])
-            if current is None or _record_quality(record) > _record_quality(current):
-                found[record["id"]] = record
-        print(f"{kind}: page {page}, {received}/{total} source rows, {len(found)} unique opportunities", flush=True)
-        if received >= total:
+            if not isinstance(hit, dict) or not isinstance(hit.get("reference"), str) or not hit["reference"].strip():
+                raise IncompleteCollection(f"{kind} page {page}: missing source reference")
+            try:
+                record = normalize(hit, kind)
+            except (ValueError, TypeError) as exc:
+                raise IncompleteCollection(f"{kind} page {page}: invalid source record") from exc
+            source = first(record["raw_metadata"], "DATASOURCE", "datasource")
+            language = first(record["raw_metadata"], "language") or hit.get("language", "")
+            if not source or language != "en":
+                raise IncompleteCollection(f"{kind} page {page}: missing source provenance or unexpected language")
+            # The current and legacy indexes may contain the same reference.
+            # Count those distinct source documents, but never the same document twice.
+            document_key = (source, record["source_reference"], language)
+            if document_key in found:
+                raise IncompleteCollection(f"{kind} page {page}: repeated source document {document_key}")
+            found[document_key] = record
+        print(f"{kind}: page {page}, {len(found)}/{total} distinct source documents", flush=True)
+        if len(found) == expected:
             break
         page += 1
-    if received != expected:
-        raise RuntimeError(f"Pagination returned {received} source rows; expected {expected}")
-    print(f"{kind}: complete; {len(found)} unique opportunities, {received - len(found)} duplicate source rows", flush=True)
+    _, final_total = _checked_page(kind, 1, 1, ordered=False)
+    if final_total != expected:
+        raise IncompleteCollection(f"API total changed at the end of the scan ({expected} → {final_total})")
     return found
 
 
+def fetch_all(kind: str, page_size: int = 100, max_attempts: int = MAX_SCAN_ATTEMPTS) -> dict[str, dict]:
+    """Require two consecutive complete scans with identical identities and content.
+
+    A total counts documents identified by source, reference and language.
+    Rejected scans are discarded in full; partial results are never unioned.
+    """
+    if kind not in {"grant", "tender"} or not 1 <= page_size <= 100 or max_attempts < 2:
+        raise ValueError("A valid kind, page size of 1–100 and at least two scan attempts are required")
+    previous = None
+    reason = "No complete scan"
+    for attempt in range(1, max_attempts + 1):
+        print(f"{kind}: verification pass {attempt}/{max_attempts}", flush=True)
+        try:
+            current = _collect_once(kind, page_size)
+        except IncompleteCollection as exc:
+            previous = None
+            reason = str(exc)
+            print(f"{kind}: rejected pass: {reason}", flush=True)
+        else:
+            if previous == current:
+                records = {}
+                for record in current.values():
+                    old = records.get(record["id"])
+                    if old is None or _record_quality(record) > _record_quality(old):
+                        records[record["id"]] = record
+                print(f"{kind}: verified {len(current)} distinct source documents, {len(records)} opportunities in two consecutive complete passes", flush=True)
+                return records
+            reason = "Source identities or content changed between complete scans" if previous is not None else "A second matching complete scan is required"
+            previous = current
+        if attempt < max_attempts:
+            time.sleep(1)
+    raise IncompleteCollection(f"Could not verify {kind} collection after {max_attempts} passes: {reason}. Previous catalogue preserved.")
+
+
 def _record_quality(record: dict) -> tuple:
-    metadata = record["raw_metadata"]
-    language = first(metadata, "language", "displayLanguage", "lang").lower()
+    """Resolve current/legacy index versions only after coverage is verified."""
     return (
         parse_date(record["source_updated_at"]) or datetime.min.replace(tzinfo=timezone.utc),
         record["source_title_present"],
-        language in {"en", "eng", "english"},
         len(record["description"]),
         len(record["conditions"]),
         bool(record["url"]),
-        record["source_reference"],
+        json.dumps(record, ensure_ascii=False, sort_keys=True),
     )
 
 

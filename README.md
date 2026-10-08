@@ -18,7 +18,7 @@ flowchart LR
 
 The Python runtime uses the standard library. The public client is plain JavaScript with locally served assets; it requires no application server, API credentials or external inference service. Project descriptions remain in the browser on the public portal.
 
-- **Collection:** grant and tender queries, validated pagination, deterministic deduplication and atomic catalogue replacement.
+- **Collection:** grant and tender queries, source-document coverage checks, two consecutive concordant scans, deterministic version resolution and atomic catalogue replacement.
 - **Lifecycle:** stable source identities, change timestamps and retained records for opportunities no longer listed by the source.
 - **Retrieval:** field-weighted lexical scoring, concept aliases, priority phrases, length normalization and explicit missing-topic evidence.
 - **Delivery:** nightly collection at 21:00 `Europe/Rome`, followed by validation, static generation and GitHub Pages deployment. Workflow execution time is best-effort.
@@ -53,7 +53,7 @@ node tests/test_matcher.js
 python3 scripts/evaluate_matcher.py --check
 ```
 
-Tests cover ingestion failure semantics, record lifecycle, date handling, HTTP contracts, static export and Python/JavaScript retrieval parity. The retrieval regression suite uses a fixed corpus of 339 records with 16 English scenarios and two supplementary Italian alias checks. Its judgments are development fixtures, not an independent estimate of retrieval accuracy.
+Tests cover pagination overlap, legitimate index versions, silently filtered totals, source changes during collection, atomic failure semantics, record lifecycle, date handling, HTTP contracts, static export and Python/JavaScript retrieval parity. The [collection validation record](docs/collection-validation.md) documents verification against real API responses. The retrieval regression suite uses a fixed corpus of 339 records with 16 English scenarios and two supplementary Italian alias checks. Its judgments are development fixtures, not an independent estimate of retrieval accuracy.
 
 Pull requests run verification and a static build. The collection workflow applies the same retrieval gates before updating the public site.
 

@@ -5,7 +5,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from unittest.mock import patch
 
-from bandi_eu.core import audit, fetch_all, live, multipart, normalize, parse_date, rank, sync
+from bandi_eu.core import audit, live, multipart, normalize, parse_date, rank, sync
 
 
 def hit(identifier="EU-2026-01", title="Clean energy storage", deadline=None):
@@ -44,49 +44,6 @@ class CoreTests(unittest.TestCase):
         self.assertEqual(record["title"], "Untitled tender (TENDER-01)")
         self.assertFalse(record["source_title_present"])
         self.assertEqual(audit({record["id"]: record})["missing_source_title"], 1)
-
-    def test_pagination_rejects_missing_rows(self):
-        first = {"totalResults": 2, "results": [hit()]}
-        second = {"totalResults": 2, "results": []}
-        with patch("bandi_eu.core.fetch_page", side_effect=[first, second]):
-            with self.assertRaises(RuntimeError):
-                fetch_all("grant", page_size=1)
-
-    def test_pagination_accepts_duplicate_source_rows(self):
-        original = hit()
-        richer = hit()
-        richer["metadata"]["descriptionByte"] = ["<p>Battery recycling research with extra detail</p>"]
-        with patch("bandi_eu.core.fetch_page", side_effect=[
-            {"totalResults": 2, "results": [original]},
-            {"totalResults": 2, "results": [richer]},
-        ]):
-            records = fetch_all("grant", page_size=1)
-        self.assertEqual(len(records), 1)
-        self.assertIn("extra detail", records["grant:ref-EU-2026-01"]["description"])
-
-    def test_pagination_preserves_distinct_source_references(self):
-        original = hit()
-        second = hit()
-        second["reference"] = "ref-2"
-        with patch("bandi_eu.core.fetch_page", side_effect=[
-            {"totalResults": 2, "results": [original]},
-            {"totalResults": 2, "results": [second]},
-        ]):
-            records = fetch_all("grant", page_size=1)
-        self.assertEqual(set(records), {"grant:ref-EU-2026-01", "grant:ref-2"})
-
-    def test_pagination_selects_latest_version_of_same_reference(self):
-        older = hit()
-        older["metadata"]["esDA_IngestDate"] = ["2025-01-01T12:00:00.000+0000"]
-        newer = hit()
-        newer["metadata"]["esDA_IngestDate"] = ["2026-01-01T12:00:00.000+0000"]
-        newer["metadata"]["descriptionByte"] = ["Short updated notice"]
-        with patch("bandi_eu.core.fetch_page", side_effect=[
-            {"totalResults": 2, "results": [older]},
-            {"totalResults": 2, "results": [newer]},
-        ]):
-            records = fetch_all("grant", page_size=1)
-        self.assertEqual(records["grant:ref-EU-2026-01"]["description"], "Short updated notice")
 
     def test_sync_is_atomic_on_api_failure(self):
         with tempfile.TemporaryDirectory() as folder:

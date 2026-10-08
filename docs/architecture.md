@@ -16,16 +16,22 @@ The two retrieval implementations share the vocabulary configuration. Full resul
 
 ## Ingestion transaction
 
-The search client requests English results from the Commission search API. Grants use source types `1`, `2`, `8`; procurement uses type `0`. Both queries include forthcoming and open source statuses. Requests use multipart JSON payloads and bounded retries.
+The search client requests English results from the [Commission search API](https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/support/apis). Grants use source types `1`, `2`, `8`; procurement uses type `0`. Both queries include forthcoming and open source statuses. Requests use multipart JSON payloads and bounded retries. Pages contain at most 100 rows; larger requested sizes can be silently capped by the API.
 
 A collection is accepted only if:
 
-1. Each query has a nonzero source total.
-2. `totalResults` remains constant across its pages.
-3. The sum of received source rows equals the reported total.
-4. Every row can be normalized into an identified record.
+1. An independent query without sorting establishes a nonzero source total.
+2. Every page honours the requested page number and size, has the expected row count and reports no warnings.
+3. Ordered pages have the same total as the independent query. Ordering uses `identifier`, `DATASOURCE` and `esDA_IngestDate`. The total is checked again without sorting after the last page.
+4. Every document has a source reference, source provenance and English language marker, and can be normalized.
+5. Every `(DATASOURCE, reference, language)` tuple occurs exactly once. Their count must equal `totalResults`.
+6. Two consecutive complete scans agree on every document identity and its normalized content, including raw metadata. Confirmation includes all source versions, before selecting a preferred version.
 
-Duplicate source rows count toward pagination completeness. They are then resolved by source identity, preferring the most recently ingested version, followed by source-title availability, English-language metadata and content completeness. Public identifiers are not deduplication keys: separate source references can share the same public identifier.
+The distinction between source documents and opportunities matters: the current `SEDIA` index and legacy `SEDIA_PRD_CENTRICITY` index can contain different versions of the same reference. Those are separate documents for coverage validation. Repeating the same document within or between pages rejects the entire scan, even if the raw row count matches the reported total.
+
+Only after coverage and stability checks pass are versions resolved into `<kind>:<reference>` opportunities. Preference is determined by source ingestion time, title availability and content completeness, with canonical JSON as the final deterministic tie-break. Separate references with the same public identifier remain separate opportunities.
+
+A category gets at most four scan attempts. A rejected scan breaks the consecutive confirmation sequence; partial scans are never combined. A complete but changed scan becomes a new confirmation candidate. Exhausted scan validation or request retries fail the collection. This protocol establishes agreement between observed API responses; it is not a server-side snapshot or proof that the upstream index contains every published call.
 
 All requested categories are fetched successfully before the stored catalogue is changed. The merged catalogue is written to an adjacent temporary file, flushed, synchronized and atomically replaced. A failed collection leaves the previous catalogue intact.
 
@@ -38,7 +44,7 @@ The writer assumes a single process. The temporary filename is shared and there 
 | Previously unseen identity | Set `first_seen`, `last_seen`, `last_changed`; mark listed |
 | Listed identity with unchanged source content | Advance `last_seen` |
 | Changed source content or reappearing identity | Advance `last_changed` and `last_seen`; mark listed |
-| Identity absent from a successful category snapshot | Retain record, set `listed: false`, advance `last_changed` |
+| Identity absent from two consecutive complete, concordant category scans | Retain record, set `listed: false`, advance `last_changed` |
 
 Local timestamps and listing flags are excluded when comparing source content. Source metadata and the original upstream timestamp remain available for audit.
 
@@ -65,7 +71,7 @@ Scores are query-dependent heuristics. They are neither calibrated probabilities
 - The schedule is 21:00 `Europe/Rome`, including daylight-saving changes. [GitHub scheduled workflows can be delayed or dropped](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows).
 - Pages receives only the generated distribution. Dataset history and evaluation fixtures remain repository assets.
 
-A failed collection or quality check prevents a fresh deployment. The existing site remains available with its previous snapshot; the interface identifies a collection older than 36 hours. Missing an upstream opportunity or a source field cannot be detected by these pipeline checks alone.
+A failed collection or quality check prevents a fresh deployment. The existing site remains available with its previous snapshot; the interface identifies a collection older than 36 hours. Logs report each scan, rejected validation and the verified document/opportunity totals. An entirely empty category is treated as suspicious and requires investigation rather than automatically unlisting its history. Missing an upstream opportunity or a source field cannot be detected by these pipeline checks alone. See the [collection validation record](collection-validation.md) for the pagination regression and real API checks.
 
 ## Capacity and extension boundaries
 

@@ -33,15 +33,17 @@ Missing scalar source values generally become empty strings. Lists become empty 
 
 `status_code` retains the source value. Known statuses are normalized to `forthcoming`, `open` or `closed` in `status`; unknown values are preserved. `opening_date`, `deadline` and `deadline_model` retain source representations. Parsed date-only deadlines use the end of the day in `Europe/Brussels`.
 
-`first_seen`, `last_seen` and `last_changed` are UTC collection timestamps. `listed` indicates presence in the most recent successful collection of the record's category. Absence does not delete a record. Previous content versions are not retained within the JSONL file.
+`first_seen`, `last_seen` and `last_changed` are UTC collection timestamps. `listed` indicates presence in the most recent verified collection of the record's category. Verification requires two consecutive complete scans with identical source documents and content. A failed collection changes neither listing flags nor timestamps. Confirmed absence does not delete a record. Previous content versions are not retained within the JSONL file.
 
 A record is eligible for the public snapshot only if it is listed, has an open source status and a known, nonexpired deadline. This operational definition does not establish legal eligibility or guarantee that the source's status is current.
 
 ## Collection invariants
 
-The API can return multiple source rows for the same identity. Pagination checks compare received source rows with the reported total before deduplication. Consequently, the stored identity count can be lower than the upstream row total.
+The API can return current and legacy index versions of the same reference. Coverage is checked using distinct `(DATASOURCE, reference, language)` document identities, before resolving versions into opportunity identities. Repeated documents within or across pages cause validation failure; they cannot stand in for missing rows. Consequently, the stored opportunity count can be lower than the upstream document total.
 
-Distinct source references sharing a public identifier or URL are preserved; they can represent different rounds or dates. The newest source ingestion timestamp determines the preferred duplicate, with deterministic completeness tie-breaks.
+Distinct source references sharing a public identifier or URL are preserved; they can represent different rounds or dates. The newest source ingestion timestamp determines the preferred index version, with deterministic completeness tie-breaks. Source reference, provenance and language are mandatory for new collections; the normalizer's identifier fallback exists for compatibility with historical inputs.
+
+The sorted query total must match an independent query without sorting, both before and after pagination. This prevents a sort on sparsely populated fields from silently dropping documents. Both categories must pass verification before the catalogue is replaced. See [collection architecture](../docs/architecture.md#ingestion-transaction) for retry and failure semantics.
 
 `python3 -m bandi_eu audit` reports current counts and missing or inconsistent fields. Counts are evaluated at invocation time and should not be inferred from historical reports.
 

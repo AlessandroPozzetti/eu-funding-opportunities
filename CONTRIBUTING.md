@@ -7,7 +7,7 @@ Use Python 3.10+ and Node.js. Runtime code has no third-party Python or JavaScri
 ## Change boundaries
 
 - Keep source normalization and persistence in `core.py`; retrieval must not invoke the upstream API.
-- Preserve source-reference identities and all-or-nothing collection behavior.
+- Preserve source-reference identities and all-or-nothing collection behavior. Source document coverage must be validated before resolving current/legacy versions; repeated pages must never count as complete coverage.
 - Treat `PUBLIC_FIELDS` and the HTTP response shapes as contracts. Document intentional changes in `docs/api.md`.
 - Update Python and JavaScript retrieval together. Vocabulary changes belong in `matching_config.json`.
 - Keep website source text in English. Render user and upstream content as text, and maintain keyboard interaction, visible focus and reduced-motion support.
